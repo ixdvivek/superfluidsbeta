@@ -37,6 +37,7 @@ const SERVICES = [
 function ServicesScreen({ onNavigate }) {
   const { Button, Eyebrow, SectionHeader, ProcessTimeline, Icon } = DSs;
   const Photo = window.SF_Photo, Section = window.SF_Section, Hero = window.SF_PageHero;
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
 
   return (
     <div>
@@ -46,19 +47,19 @@ function ServicesScreen({ onNavigate }) {
 
       {/* SERVICE ROWS */}
       <Section>
-        <div style={{ display: "flex", flexDirection: "column", gap: 88 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 52 : 88 }}>
           {SERVICES.map((s, i) => {
-            const flip = i % 2 === 1;
+            const flip = !isMobile && i % 2 === 1;
             return (
-              <div key={s.title} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+              <div key={s.title} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 24 : 64, alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 18, order: flip ? 2 : 1 }}>
                   <span style={{ display: "inline-flex", width: 56, height: 56, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
                     <Icon name={s.icon} size={28} strokeWidth={1.75} />
                   </span>
                   <Eyebrow>{s.eyebrow}</Eyebrow>
-                  <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>{s.title}</h2>
-                  <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>{s.body}</p>
-                  <ul style={{ margin: "4px 0 0", padding: 0, listStyle: "none", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 20px" }}>
+                  <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 26 : 34, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>{s.title}</h2>
+                  <p style={{ margin: 0, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>{s.body}</p>
+                  <ul style={{ margin: "4px 0 0", padding: 0, listStyle: "none", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "10px 0" : "12px 20px" }}>
                     {s.points.map((p) => (
                       <li key={p} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, lineHeight: 1.5, color: "var(--text-primary)" }}>
                         <Icon name="check" size={16} color="var(--aqua-600)" style={{ marginTop: 2, flexShrink: 0 }} /> {p}
@@ -67,7 +68,7 @@ function ServicesScreen({ onNavigate }) {
                   </ul>
                 </div>
                 <div style={{ order: flip ? 1 : 2 }}>
-                  <Photo icon={s.photo} label={s.title.toUpperCase()} height={340} />
+                  <Photo icon={s.photo} label={s.title.toUpperCase()} height={isMobile ? 220 : 340} />
                 </div>
               </div>
             );
@@ -78,7 +79,7 @@ function ServicesScreen({ onNavigate }) {
       {/* SERVICE PROCESS TIMELINE */}
       <Section bg="var(--surface)">
         <SectionHeader align="center" eyebrow="Service Process" title="A disciplined engineering workflow"
-          description="Seven stages, one accountable team — from first consultation to ongoing maintenance." style={{ marginBottom: 56 }} />
+          description="Seven stages, one accountable team — from first consultation to ongoing maintenance." style={{ marginBottom: isMobile ? 36 : 56 }} />
         <ProcessTimeline steps={[
           { label: "Consultation", description: "Understand site & requirements." },
           { label: "Engineering Review", description: "Hydraulic calculations & design." },

@@ -23,6 +23,7 @@ function ProjectsScreen({ onNavigate }) {
   const [ind, setInd] = React.useState("All");
   const [prod, setProd] = React.useState("All");
   const [loc, setLoc] = React.useState("All");
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
 
   const filtered = ALL_PROJECTS.filter((p) =>
     (ind === "All" || p.industry === ind) &&
@@ -31,18 +32,18 @@ function ProjectsScreen({ onNavigate }) {
   );
 
   const FilterRow = ({ label, options, value, set }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)", width: 76, flexShrink: 0 }}>{label}</span>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", gap: isMobile ? 8 : 12 }}>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)", width: isMobile ? "auto" : 76, flexShrink: 0 }}>{label}</span>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         {options.map((o) => {
           const on = o === value;
           return (
             <button key={o} onClick={() => set(o)} style={{
-              padding: "7px 14px", borderRadius: "var(--radius-pill)", cursor: "pointer",
+              padding: isMobile ? "6px 12px" : "7px 14px", borderRadius: "var(--radius-pill)", cursor: "pointer",
               border: "1px solid " + (on ? "transparent" : "var(--border-default)"),
               background: on ? "var(--navy-800)" : "var(--surface)",
               color: on ? "var(--white)" : "var(--text-secondary)",
-              fontFamily: "var(--font-body)", fontSize: 13.5, fontWeight: on ? 600 : 500,
+              fontFamily: "var(--font-body)", fontSize: isMobile ? 12.5 : 13.5, fontWeight: on ? 600 : 500,
               transition: "var(--transition-base)",
             }}>{o}</button>
           );
@@ -58,14 +59,14 @@ function ProjectsScreen({ onNavigate }) {
         crumb="Projects" onNavigate={onNavigate} />
 
       {/* FILTERS */}
-      <Section py={56}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "26px 28px", background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)" }}>
+      <Section py={isMobile ? 40 : 56}>
+        <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 18 : 16, padding: isMobile ? "20px" : "26px 28px", background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)" }}>
           <FilterRow label="Industry" options={PROJ_INDUSTRIES} value={ind} set={setInd} />
           <FilterRow label="Product" options={PROJ_PRODUCT_FILTERS} value={prod} set={setProd} />
           <FilterRow label="Location" options={PROJ_LOCATIONS} value={loc} set={setLoc} />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "32px 0 24px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "28px 0 20px" }}>
           <span style={{ fontSize: 15, color: "var(--text-secondary)" }}>Showing <strong style={{ color: "var(--text-primary)" }}>{filtered.length}</strong> {filtered.length === 1 ? "project" : "projects"}</span>
           {(ind !== "All" || prod !== "All" || loc !== "All") && (
             <button onClick={() => { setInd("All"); setProd("All"); setLoc("All"); }} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "var(--color-secondary)", fontSize: 14, fontWeight: 500 }}>
@@ -75,7 +76,7 @@ function ProjectsScreen({ onNavigate }) {
         </div>
 
         {filtered.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 14 : 24 }}>
             {filtered.map((p) => (
               <ProjectCard key={p.id} name={p.name} location={p.location} industry={p.industry} products={p.products}
                 href="#" onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProjectDetail", param: p.id }); }} />

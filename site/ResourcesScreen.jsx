@@ -27,6 +27,7 @@ function ResourcesScreen({ onNavigate }) {
   const { Button, Eyebrow, SectionHeader, Badge, Input, Icon } = DSr;
   const Section = window.SF_Section, Hero = window.SF_PageHero;
   const [q, setQ] = React.useState("");
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
   const ql = q.trim().toLowerCase();
   const match = (s) => !ql || s.toLowerCase().includes(ql);
 
@@ -52,26 +53,26 @@ function ResourcesScreen({ onNavigate }) {
           {ql && <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{dls.length} of {DOWNLOADS.length} documents</span>}
         </div>
         {dls.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: isMobile ? 12 : 16 }}>
             {dls.map((d) => (
               <a key={d.title} href="#" onClick={(e) => e.preventDefault()} style={{
-                display: "flex", alignItems: "center", gap: 18, padding: "20px 22px", textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 16, padding: isMobile ? "16px 18px" : "20px 22px", textDecoration: "none",
                 background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)",
                 boxShadow: "var(--shadow-card)", transition: "var(--transition-base)",
               }}
                 onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-md)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "var(--aqua-400)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-card)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = "var(--border-subtle)"; }}>
-                <span style={{ display: "inline-flex", width: 48, height: 48, flexShrink: 0, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name={d.icon} size={23} strokeWidth={1.75} />
+                <span style={{ display: "inline-flex", width: 44, height: 44, flexShrink: 0, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name={d.icon} size={22} strokeWidth={1.75} />
                 </span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 0 }}>
-                  <span style={{ fontFamily: "var(--font-heading)", fontSize: 15.5, fontWeight: 600, color: "var(--text-primary)" }}>{d.title}</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, flex: 1, minWidth: 0 }}>
+                  <span style={{ fontFamily: "var(--font-heading)", fontSize: isMobile ? 14 : 15.5, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.35 }}>{d.title}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <Badge tone={TYPE_TONE[d.type] || "neutral"} variant="soft">{d.type}</Badge>
                     <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)" }}>{d.size}</span>
                   </div>
                 </div>
-                <Icon name="download" size={20} color="var(--text-muted)" />
+                <Icon name="download" size={18} color="var(--text-muted)" style={{ flexShrink: 0 }} />
               </a>
             ))}
           </div>
@@ -86,7 +87,7 @@ function ResourcesScreen({ onNavigate }) {
           {ql && <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{arts.length} of {ARTICLES.length} articles</span>}
         </div>
         {arts.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 14 : 24 }}>
             {arts.map((a) => (
               <a key={a.title} href="#" onClick={(e) => e.preventDefault()} style={{
                 display: "flex", flexDirection: "column", textDecoration: "none",
@@ -96,11 +97,11 @@ function ResourcesScreen({ onNavigate }) {
                 onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-lg)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-card)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                 <div style={{ position: "relative" }}>
-                  <window.SF_Photo icon={a.icon} height={150} radius="0" />
-                  <span style={{ position: "absolute", top: 14, left: 14 }}><Badge tone="aqua" variant="solid">{a.cat}</Badge></span>
+                  <window.SF_Photo icon={a.icon} height={isMobile ? 130 : 150} radius="0" />
+                  <span style={{ position: "absolute", top: 12, left: 12 }}><Badge tone="aqua" variant="solid">{a.cat}</Badge></span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 22, flex: 1 }}>
-                  <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 600, lineHeight: 1.35, color: "var(--text-primary)", textWrap: "balance" }}>{a.title}</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: isMobile ? 18 : 22, flex: 1 }}>
+                  <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 16 : 18, fontWeight: 600, lineHeight: 1.35, color: "var(--text-primary)", textWrap: "balance" }}>{a.title}</h3>
                   <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 12, fontSize: 13, color: "var(--text-muted)" }}>
                     <span style={{ fontFamily: "var(--font-mono)" }}>{a.date}</span>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Icon name="clock" size={13} /> {a.read}</span>

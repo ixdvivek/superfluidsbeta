@@ -27,8 +27,9 @@ const CERTS = [
 ];
 
 function AboutScreen({ onNavigate }) {
-  const { Button, Eyebrow, SectionHeader, StatCard, Avatar, Icon, Breadcrumb, Card } = DSa;
+  const { Button, Eyebrow, SectionHeader, StatCard, Icon } = DSa;
   const Photo = window.SF_Photo, Section = window.SF_Section, Hero = window.SF_PageHero;
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
 
   return (
     <div>
@@ -38,14 +39,14 @@ function AboutScreen({ onNavigate }) {
 
       {/* COMPANY OVERVIEW */}
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 64, alignItems: "center" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr", gap: isMobile ? 32 : 64, alignItems: "center" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <SectionHeader eyebrow="Who We Are" title="Empowering infrastructure with precision engineering" />
             <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>
               At Superfluids, we specialise in the marketing, supply and integration of state-of-the-art equipment designed to optimise performance, efficiency and reliability across residential, commercial and industrial sectors.
             </p>
             <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>
-              Our Sales and Service teams are factory-trained experts dedicated to high-performance packaging and integration of complex systems. We bridge the gap between world-class manufacturing and site-specific operational excellence — and beyond supplying components, we deliver Total MEP Contracting, managing mechanical, electrical and plumbing integration so your facility runs as a unified, efficient ecosystem.
+              Our Sales and Service teams are factory-trained experts dedicated to high-performance packaging and integration of complex systems. We bridge the gap between world-class manufacturing and site-specific operational excellence.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 4 }}>
               <Button variant="accent" iconRight="arrow-right" onClick={() => onNavigate("Services")}>Our Services</Button>
@@ -53,10 +54,10 @@ function AboutScreen({ onNavigate }) {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <Photo icon="waves" label="SUPERFLUIDS · DUBAI INVESTMENT PARK" height={300} />
+            <Photo icon="waves" label="SUPERFLUIDS · DUBAI INVESTMENT PARK" height={isMobile ? 220 : 300} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Photo icon="gauge" label="PUMP ROOM" height={130} radius="var(--radius-md)" tone="alt" />
-              <Photo icon="cylinder" label="GRP STORAGE" height={130} radius="var(--radius-md)" tone="alt" />
+              <Photo icon="gauge" label="PUMP ROOM" height={isMobile ? 100 : 130} radius="var(--radius-md)" tone="alt" />
+              <Photo icon="cylinder" label="GRP STORAGE" height={isMobile ? 100 : 130} radius="var(--radius-md)" tone="alt" />
             </div>
           </div>
         </div>
@@ -64,19 +65,19 @@ function AboutScreen({ onNavigate }) {
 
       {/* MISSION + VISION */}
       <Section bg="var(--surface)">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 24 }}>
           {[
             { icon: "target", eyebrow: "Our Mission", title: "Reliable fluid systems, engineered to last", body: "To deliver high-performance pumping, storage and automation systems — configured, installed and commissioned to peak standards — and to support them through their entire operational life." },
             { icon: "telescope", eyebrow: "Our Vision", title: "The UAE's most trusted fluid engineering partner", body: "To be the region's reference for fluid and MEP engineering: the team developers, consultants and facility owners trust to solve complex problems efficiently and sustainably." },
           ].map((b) => (
-            <div key={b.eyebrow} style={{ position: "relative", overflow: "hidden", background: "var(--gradient-navy)", borderRadius: "var(--radius-xl)", padding: "48px 44px", display: "flex", flexDirection: "column", gap: 16 }}>
+            <div key={b.eyebrow} style={{ position: "relative", overflow: "hidden", background: "var(--gradient-navy)", borderRadius: "var(--radius-xl)", padding: isMobile ? "36px 28px" : "48px 44px", display: "flex", flexDirection: "column", gap: 16 }}>
               <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,183,199,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.08) 1px, transparent 1px)", backgroundSize: "36px 36px", maskImage: "radial-gradient(100% 100% at 85% 10%, #000, transparent 70%)" }} />
               <span style={{ position: "relative", display: "inline-flex", width: 52, height: 52, borderRadius: "var(--radius-md)", background: "rgba(0,183,199,0.16)", border: "1px solid rgba(0,183,199,0.3)", color: "var(--aqua-400)", alignItems: "center", justifyContent: "center" }}>
                 <Icon name={b.icon} size={26} strokeWidth={1.75} />
               </span>
               <Eyebrow tone="aqua">{b.eyebrow}</Eyebrow>
-              <h3 style={{ position: "relative", margin: 0, fontFamily: "var(--font-heading)", fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>{b.title}</h3>
-              <p style={{ position: "relative", margin: 0, fontSize: 16, lineHeight: 1.7, color: "var(--text-on-dark-secondary)" }}>{b.body}</p>
+              <h3 style={{ position: "relative", margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 22 : 26, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>{b.title}</h3>
+              <p style={{ position: "relative", margin: 0, fontSize: isMobile ? 14.5 : 16, lineHeight: 1.7, color: "var(--text-on-dark-secondary)" }}>{b.body}</p>
             </div>
           ))}
         </div>
@@ -85,10 +86,10 @@ function AboutScreen({ onNavigate }) {
       {/* CORE VALUES */}
       <Section>
         <SectionHeader align="center" eyebrow="Core Values" title="What we stand for"
-          description="The principles that guide every project, from first survey to long-term maintenance." style={{ marginBottom: 56 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+          description="The principles that guide every project, from first survey to long-term maintenance." style={{ marginBottom: isMobile ? 32 : 56 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 14 : 24 }}>
           {VALUES.map((v) => (
-            <div key={v.title} style={{ display: "flex", flexDirection: "column", gap: 14, padding: 28, background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
+            <div key={v.title} style={{ display: "flex", flexDirection: "column", gap: 14, padding: isMobile ? 22 : 28, background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
               <span style={{ display: "inline-flex", width: 48, height: 48, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
                 <Icon name={v.icon} size={24} strokeWidth={1.75} />
               </span>
@@ -102,15 +103,15 @@ function AboutScreen({ onNavigate }) {
       {/* LEADERSHIP */}
       <Section bg="var(--surface)">
         <SectionHeader align="center" eyebrow="Leadership Team" title="The people behind the engineering"
-          description="A management team with deep roots in MEP, fluid systems and UAE infrastructure." style={{ marginBottom: 56 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
+          description="A management team with deep roots in MEP, fluid systems and UAE infrastructure." style={{ marginBottom: isMobile ? 32 : 56 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: isMobile ? 14 : 24 }}>
           {LEADERS.map((l) => (
             <div key={l.name} style={{ display: "flex", flexDirection: "column", background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", overflow: "hidden", boxShadow: "var(--shadow-card)" }}>
-              <Photo icon="user" height={180} radius="0" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: 22 }}>
-                <h4 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>{l.name}</h4>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, letterSpacing: "0.03em", color: "var(--aqua-600)", textTransform: "uppercase" }}>{l.role}</span>
-                <p style={{ margin: "4px 0 0", fontSize: 14, lineHeight: 1.6, color: "var(--text-secondary)" }}>{l.bio}</p>
+              <Photo icon="user" height={isMobile ? 130 : 180} radius="0" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: isMobile ? 14 : 22 }}>
+                <h4 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 15 : 18, fontWeight: 600, color: "var(--text-primary)" }}>{l.name}</h4>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: isMobile ? 10.5 : 12.5, letterSpacing: "0.03em", color: "var(--aqua-600)", textTransform: "uppercase" }}>{l.role}</span>
+                {!isMobile && <p style={{ margin: "4px 0 0", fontSize: 14, lineHeight: 1.6, color: "var(--text-secondary)" }}>{l.bio}</p>}
               </div>
             </div>
           ))}
@@ -121,9 +122,9 @@ function AboutScreen({ onNavigate }) {
       <Section>
         <SectionHeader align="center" eyebrow="Certifications & Authorisations" title="Credentials you can build on"
           description="Quality, environmental and safety accreditation, plus authorisations from the manufacturers we represent." style={{ marginBottom: 48 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 12 : 20 }}>
           {CERTS.map((c) => (
-            <div key={c.title} style={{ display: "flex", alignItems: "center", gap: 18, padding: "22px 26px", background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)" }}>
+            <div key={c.title} style={{ display: "flex", alignItems: "center", gap: 18, padding: isMobile ? "18px 20px" : "22px 26px", background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)" }}>
               <span style={{ display: "inline-flex", width: 50, height: 50, flexShrink: 0, borderRadius: "var(--radius-md)", background: "var(--surface)", border: "1px solid var(--border-subtle)", color: "var(--color-secondary)", alignItems: "center", justifyContent: "center" }}>
                 <Icon name={c.icon} size={24} strokeWidth={1.75} />
               </span>
@@ -136,10 +137,10 @@ function AboutScreen({ onNavigate }) {
         </div>
       </Section>
 
-      {/* COMPANY STATISTICS — navy band */}
+      {/* COMPANY STATISTICS */}
       <Section bg="var(--gradient-navy)">
-        <SectionHeader invert align="center" eyebrow="By the Numbers" title="A track record across the Emirates" style={{ marginBottom: 56 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 24 }}>
+        <SectionHeader invert align="center" eyebrow="By the Numbers" title="A track record across the Emirates" style={{ marginBottom: isMobile ? 36 : 56 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(5, 1fr)", gap: isMobile ? 16 : 24 }}>
           <StatCard invert align="center" value="500" suffix="+" label="Projects Delivered" />
           <StatCard invert align="center" value="15" suffix="+" label="Years of Experience" />
           <StatCard invert align="center" value="14" suffix="" label="Brands Represented" />

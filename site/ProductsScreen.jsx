@@ -11,28 +11,29 @@ const PRODUCTS = [
 ];
 
 function ProductsScreen({ onNavigate }) {
-  const { Button, Eyebrow, SectionHeader, SolutionCard, Breadcrumb, Tabs, SpecTable, Badge, Card, Input, Select, Textarea, Checkbox, Icon } = DSp;
+  const { Button, Eyebrow, SectionHeader, SolutionCard, Breadcrumb, Tabs, SpecTable, Badge, Card, Input, Icon } = DSp;
   const Photo = window.SF_Photo, Section = window.SF_Section;
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
 
   return (
     <div>
       {/* HERO */}
       <section style={{ position: "relative", background: "var(--gradient-navy)", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)", backgroundSize: "40px 40px", maskImage: "radial-gradient(100% 100% at 70% 0%, #000, transparent 75%)" }} />
-        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: "56px 32px 72px" }}>
+        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: isMobile ? "36px 20px 48px" : "56px 32px 72px" }}>
           <Breadcrumb invert items={[{ label: "Home", href: "#" }, { label: "Products" }]} />
-          <div style={{ marginTop: 28, maxWidth: 680, display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ marginTop: 24, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
             <Eyebrow tone="aqua">Product Portfolio</Eyebrow>
-            <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 52, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)" }}>Engineered products, ready to specify</h1>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>Six product families from the world's leading manufacturers — backed by Superfluids' in-house engineering, supply and service.</p>
+            <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 32 : 52, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)" }}>Engineered products, ready to specify</h1>
+            <p style={{ margin: 0, fontSize: isMobile ? 15 : 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>Six product families from the world's leading manufacturers — backed by Superfluids' in-house engineering, supply and service.</p>
           </div>
         </div>
       </section>
 
       {/* CATEGORY GRID */}
       <Section>
-        <SectionHeader eyebrow="Categories" title="Browse by product family" style={{ marginBottom: 48 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+        <SectionHeader eyebrow="Categories" title="Browse by product family" style={{ marginBottom: isMobile ? 32 : 48 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 14 : 24 }}>
           {PRODUCTS.map((p) => (
             <SolutionCard key={p.title} icon={p.icon} title={p.title} description={p.description} linkLabel="View range" onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProductDetail", param: p.id }); }} />
           ))}
@@ -42,13 +43,13 @@ function ProductsScreen({ onNavigate }) {
       {/* PRODUCT DETAIL PREVIEW */}
       <Section bg="var(--surface)">
         <SectionHeader eyebrow="Product Detail" title="Booster Pump Sets"
-          description="An example of how each product is presented — overview, applications, specifications and downloads." style={{ marginBottom: 40 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <Photo icon="gauge" label="VARIABLE-SPEED BOOSTER SET" height={300} />
+          description="An example of how each product is presented — overview, applications, specifications and downloads." style={{ marginBottom: isMobile ? 28 : 40 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 24 : 48, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <Photo icon="gauge" label="VARIABLE-SPEED BOOSTER SET" height={isMobile ? 200 : 300} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
               {["droplet", "settings-2", "activity"].map((ic, i) => (
-                <Photo key={i} icon={ic} height={88} radius="var(--radius-md)" tone="alt" />
+                <Photo key={i} icon={ic} height={isMobile ? 70 : 88} radius="var(--radius-md)" tone="alt" />
               ))}
             </div>
           </div>
@@ -86,7 +87,7 @@ function ProductsScreen({ onNavigate }) {
             ]} />
             <Card padding="md" style={{ background: "var(--gray-50)", boxShadow: "none" }}>
               <h4 style={{ margin: "0 0 12px", fontFamily: "var(--font-heading)", fontSize: 18, color: "var(--text-primary)" }}>Request information</h4>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
                 <Input placeholder="Full name" />
                 <Input placeholder="Email" type="email" iconLeft="mail" />
               </div>

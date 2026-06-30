@@ -5,6 +5,7 @@ function ContactScreen({ onNavigate }) {
   const { Button, Eyebrow, SectionHeader, Input, Select, Textarea, Checkbox, Accordion, Card, Badge, Icon, Breadcrumb } = DSc;
   const Section = window.SF_Section;
   const [submitted, setSubmitted] = React.useState(false);
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
 
   const contactBlocks = [
     { icon: "map-pin", title: "Office Location", lines: ["Dubai Industrial City", "Dubai, United Arab Emirates"] },
@@ -18,21 +19,21 @@ function ContactScreen({ onNavigate }) {
       {/* HERO */}
       <section style={{ position: "relative", background: "var(--gradient-navy)", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)", backgroundSize: "40px 40px", maskImage: "radial-gradient(100% 100% at 30% 0%, #000, transparent 75%)" }} />
-        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: "56px 32px 72px" }}>
+        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: isMobile ? "36px 20px 48px" : "56px 32px 72px" }}>
           <Breadcrumb invert items={[{ label: "Home", href: "#" }, { label: "Contact" }]} />
-          <div style={{ marginTop: 28, maxWidth: 680, display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ marginTop: 24, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
             <Eyebrow tone="aqua">Get in touch</Eyebrow>
-            <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 52, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)" }}>Let's discuss your project</h1>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>Our engineering team is ready to assist with your project requirements — from sizing to supply and commissioning.</p>
+            <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 32 : 52, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)" }}>Let's discuss your project</h1>
+            <p style={{ margin: 0, fontSize: isMobile ? 15 : 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>Our engineering team is ready to assist with your project requirements — from sizing to supply and commissioning.</p>
           </div>
         </div>
       </section>
 
       {/* CONTACT INFO + FORM */}
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 56, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.15fr", gap: isMobile ? 36 : 56, alignItems: "start" }}>
           {/* Info */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 16 : 20 }}>
             {contactBlocks.map((b) => (
               <div key={b.title} style={{ display: "flex", gap: 16 }}>
                 <span style={{ display: "inline-flex", width: 46, height: 46, flexShrink: 0, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
@@ -55,21 +56,21 @@ function ContactScreen({ onNavigate }) {
           </div>
 
           {/* Inquiry form */}
-          <Card padding="xl">
+          <Card padding={isMobile ? "md" : "xl"}>
             {submitted ? (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "48px 16px", textAlign: "center" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "40px 16px", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", width: 64, height: 64, borderRadius: "50%", background: "var(--green-50)", color: "var(--green-600)", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={32} strokeWidth={3} /></span>
                 <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 24, color: "var(--text-primary)" }}>Inquiry received</h3>
                 <p style={{ margin: 0, fontSize: 15.5, color: "var(--text-secondary)", maxWidth: 360, lineHeight: 1.6 }}>Thank you — our engineering team will respond within one business day.</p>
                 <Button variant="outline" onClick={() => setSubmitted(false)}>Submit another inquiry</Button>
               </div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 22, color: "var(--text-primary)" }}>Submit an inquiry</h3>
                   <p style={{ margin: 0, fontSize: 14, color: "var(--text-secondary)" }}>Tell us about your project and we'll get back to you.</p>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
                   <Input label="Full Name" placeholder="Jane Engineer" required />
                   <Input label="Company Name" placeholder="Acme Contracting" />
                   <Input label="Email Address" type="email" iconLeft="mail" placeholder="you@company.com" required />
@@ -92,7 +93,7 @@ function ContactScreen({ onNavigate }) {
 
       {/* FAQ */}
       <Section bg="var(--surface)">
-        <div style={{ display: "grid", gridTemplateColumns: "0.8fr 1.2fr", gap: 56, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.8fr 1.2fr", gap: isMobile ? 28 : 56, alignItems: "start" }}>
           <SectionHeader eyebrow="FAQ" title="Common questions"
             description="Quick answers on availability, support, quotations and maintenance. Need more? Speak with our engineering team." />
           <Accordion items={[
@@ -106,15 +107,15 @@ function ContactScreen({ onNavigate }) {
       </Section>
 
       {/* FINAL CTA */}
-      <Section bg="var(--gradient-navy)" py={80}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
+      <Section bg="var(--gradient-navy)" py={isMobile ? 56 : 80}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", gap: 28, flexWrap: "wrap" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 620 }}>
             <Eyebrow tone="aqua">Technical Assistance</Eyebrow>
-            <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 38, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>Speak with our engineering team</h2>
+            <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 26 : 38, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>Speak with our engineering team</h2>
           </div>
-          <div style={{ display: "flex", gap: 12 }}>
-            <Button variant="accent" size="lg" iconRight="arrow-right">Request Consultation</Button>
-            <Button size="lg" iconLeft="message-circle" style={{ background: "var(--green-600)", color: "var(--white)", border: "none" }}>WhatsApp</Button>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Button variant="accent" size={isMobile ? "md" : "lg"} iconRight="arrow-right">Request Consultation</Button>
+            <Button size={isMobile ? "md" : "lg"} iconLeft="message-circle" style={{ background: "var(--green-600)", color: "var(--white)", border: "none" }}>WhatsApp</Button>
           </div>
         </div>
       </Section>

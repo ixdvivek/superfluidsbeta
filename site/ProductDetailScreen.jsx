@@ -87,43 +87,44 @@ const PRODUCT_ORDER = ["booster-pumps", "grp-tanks", "vfd-systems", "industrial-
 function ProductDetailScreen({ onNavigate, param }) {
   const { Button, Eyebrow, SectionHeader, Tabs, SpecTable, Badge, Card, Input, Icon, Breadcrumb } = DSpdt;
   const Photo = window.SF_Photo, Section = window.SF_Section;
+  const isMobile = window.SF_useMedia('(max-width: 768px)');
   const id = PRODUCT_DATA[param] ? param : "booster-pumps";
   const p = PRODUCT_DATA[id];
   const related = PRODUCT_ORDER.filter((x) => x !== id).slice(0, 3);
 
   return (
     <div>
-      {/* HERO / OVERVIEW */}
+      {/* HERO */}
       <section style={{ position: "relative", background: "var(--gradient-navy)", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)", backgroundSize: "40px 40px", maskImage: "radial-gradient(100% 100% at 70% 0%, #000, transparent 75%)" }} />
-        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: "52px 32px 64px" }}>
+        <div style={{ position: "relative", maxWidth: "var(--container-max)", margin: "0 auto", padding: isMobile ? "36px 20px 48px" : "52px 32px 64px" }}>
           <Breadcrumb invert items={[{ label: "Home", href: "#" }, { label: "Products", href: "#" }, { label: p.name }]} />
-          <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 56, alignItems: "center" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ marginTop: 22, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.1fr 0.9fr", gap: isMobile ? 24 : 56, alignItems: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <Badge tone="aqua" variant="solid">{p.category}</Badge>
                 <Badge tone="neutral" style={{ background: "rgba(255,255,255,0.1)", color: "var(--white)", borderColor: "rgba(255,255,255,0.2)" }}>{p.brands}</Badge>
               </div>
-              <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 46, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>{p.name}</h1>
-              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>{p.tagline}</p>
+              <h1 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 30 : 46, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--white)", textWrap: "balance" }}>{p.name}</h1>
+              <p style={{ margin: 0, fontSize: isMobile ? 15 : 18, lineHeight: 1.6, color: "var(--text-on-dark-secondary)" }}>{p.tagline}</p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 4 }}>
-                <Button variant="accent" size="lg" iconRight="arrow-right" onClick={() => onNavigate("Contact")}>Request a Quote</Button>
-                <Button size="lg" variant="outline" iconLeft="download" style={{ background: "rgba(255,255,255,0.06)", color: "var(--white)", borderColor: "rgba(255,255,255,0.25)" }}>Datasheet</Button>
+                <Button variant="accent" size={isMobile ? "md" : "lg"} iconRight="arrow-right" onClick={() => onNavigate("Contact")}>Request a Quote</Button>
+                <Button size={isMobile ? "md" : "lg"} variant="outline" iconLeft="download" style={{ background: "rgba(255,255,255,0.06)", color: "var(--white)", borderColor: "rgba(255,255,255,0.25)" }}>Datasheet</Button>
               </div>
             </div>
-            <Photo icon={p.icon} label={p.name.toUpperCase()} height={300} />
+            <Photo icon={p.icon} label={p.name.toUpperCase()} height={isMobile ? 200 : 300} />
           </div>
         </div>
       </section>
 
       {/* OVERVIEW + APPLICATIONS */}
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "1.3fr 0.7fr", gap: 56, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 0.7fr", gap: isMobile ? 24 : 56, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <SectionHeader eyebrow="Overview" title="About this system" />
-            <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>{p.overview}</p>
+            <p style={{ margin: 0, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: "var(--text-secondary)" }}>{p.overview}</p>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: 28, background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: isMobile ? 20 : 28, background: "var(--gray-50)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)" }}>
             <span style={{ fontFamily: "var(--font-heading)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)" }}>Applications</span>
             <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
               {p.applications.map((a) => <li key={a} style={{ display: "flex", gap: 10, fontSize: 15, lineHeight: 1.5, color: "var(--text-secondary)" }}><Icon name="check" size={16} color="var(--aqua-600)" style={{ marginTop: 2, flexShrink: 0 }} />{a}</li>)}
@@ -134,15 +135,15 @@ function ProductDetailScreen({ onNavigate, param }) {
 
       {/* BENEFITS */}
       <Section bg="var(--surface)">
-        <SectionHeader align="center" eyebrow="Benefits" title="Why specify this system" style={{ marginBottom: 48 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
+        <SectionHeader align="center" eyebrow="Benefits" title="Why specify this system" style={{ marginBottom: isMobile ? 28 : 48 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: isMobile ? 14 : 24 }}>
           {p.benefits.map((b) => (
-            <div key={b.title} style={{ display: "flex", flexDirection: "column", gap: 12, padding: 26, background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
-              <span style={{ display: "inline-flex", width: 46, height: 46, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
-                <Icon name={b.icon} size={23} strokeWidth={1.75} />
+            <div key={b.title} style={{ display: "flex", flexDirection: "column", gap: 12, padding: isMobile ? 18 : 26, background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
+              <span style={{ display: "inline-flex", width: 44, height: 44, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
+                <Icon name={b.icon} size={22} strokeWidth={1.75} />
               </span>
-              <h4 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)" }}>{b.title}</h4>
-              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--text-secondary)" }}>{b.text}</p>
+              <h4 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: isMobile ? 15 : 17, fontWeight: 600, color: "var(--text-primary)" }}>{b.title}</h4>
+              <p style={{ margin: 0, fontSize: isMobile ? 13 : 14, lineHeight: 1.6, color: "var(--text-secondary)" }}>{b.text}</p>
             </div>
           ))}
         </div>
@@ -150,7 +151,7 @@ function ProductDetailScreen({ onNavigate, param }) {
 
       {/* SPECS + DOWNLOADS + INQUIRY */}
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 28 : 48, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <SectionHeader eyebrow="Technical Specifications" title="Specifications" />
             <SpecTable rows={p.specs} />
@@ -164,7 +165,7 @@ function ProductDetailScreen({ onNavigate, param }) {
               ))}
             </div>
           </div>
-          <Card padding="xl" style={{ position: "sticky", top: 96 }}>
+          <Card padding={isMobile ? "md" : "xl"}>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 22, color: "var(--text-primary)" }}>Request information</h3>
@@ -182,12 +183,12 @@ function ProductDetailScreen({ onNavigate, param }) {
 
       {/* RELATED */}
       <Section bg="var(--surface)">
-        <SectionHeader eyebrow="Related Products" title="Explore the portfolio" style={{ marginBottom: 40 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+        <SectionHeader eyebrow="Related Products" title="Explore the portfolio" style={{ marginBottom: isMobile ? 28 : 40 }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 14 : 24 }}>
           {related.map((rid) => {
             const r = PRODUCT_DATA[rid];
             return (
-              <a key={rid} href="#" onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProductDetail", param: rid }); }} style={{ display: "flex", flexDirection: "column", gap: 14, padding: 28, textDecoration: "none", background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)", transition: "var(--transition-base)" }}
+              <a key={rid} href="#" onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProductDetail", param: rid }); }} style={{ display: "flex", flexDirection: "column", gap: 14, padding: isMobile ? 20 : 28, textDecoration: "none", background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)", transition: "var(--transition-base)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-lg)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-card)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                 <span style={{ display: "inline-flex", width: 48, height: 48, borderRadius: "var(--radius-md)", background: "var(--aqua-50)", color: "var(--aqua-600)", alignItems: "center", justifyContent: "center" }}>
