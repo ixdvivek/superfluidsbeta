@@ -1,0 +1,8 @@
+/* Superfluids — Webfonts
+   Outfit (headings), Inter (body), Plus Jakarta Sans (alternative heading).
+   NOTE: loaded from Google Fonts CDN rather than self-hosted binaries.
+   If you need offline/self-hosted .woff2 files, ask and they'll be vendored in. */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* Mono — for technical specs / CAD-style numeric readouts. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");

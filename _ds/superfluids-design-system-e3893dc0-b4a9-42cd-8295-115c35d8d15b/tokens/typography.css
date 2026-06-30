@@ -1,0 +1,47 @@
+/* ============================================================
+   Superfluids — Typography Tokens
+   Outfit = display/headings. Inter = body/UI. Plus Jakarta Sans
+   = alternative heading voice. IBM Plex Mono = technical specs.
+   Scale per brand PRD: H1 64 / H2 48 / H3 32 / H4 24 / body 16.
+   ============================================================ */
+:root {
+  /* ---- Families ---- */
+  --font-heading: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-heading-alt: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- Weights ---- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* ---- Type scale (px) ---- */
+  --text-display: 72px;  /* oversized hero */
+  --text-h1: 64px;
+  --text-h2: 48px;
+  --text-h3: 32px;
+  --text-h4: 24px;
+  --text-h5: 20px;
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-sm: 14px;
+  --text-xs: 12px;
+  --text-eyebrow: 13px;  /* uppercase label above headings */
+
+  /* ---- Line heights ---- */
+  --leading-tight: 1.05;
+  --leading-snug: 1.18;
+  --leading-heading: 1.25;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.7;
+
+  /* ---- Letter spacing ---- */
+  --tracking-tight: -0.02em;   /* large display headings */
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-eyebrow: 0.14em;  /* uppercase eyebrows / labels */
+}

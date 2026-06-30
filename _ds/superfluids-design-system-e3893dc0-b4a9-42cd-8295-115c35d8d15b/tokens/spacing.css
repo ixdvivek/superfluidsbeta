@@ -1,0 +1,36 @@
+/* ============================================================
+   Superfluids — Spacing, Layout & Radius Tokens
+   8px base grid. Generous section rhythm for a premium B2B feel.
+   ============================================================ */
+:root {
+  /* ---- Spacing scale (8px base) ---- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+  --space-10: 80px;
+  --space-11: 96px;
+  --space-12: 128px;
+
+  /* ---- Section rhythm ---- */
+  --section-y: 96px;        /* vertical padding for marketing sections */
+  --section-y-sm: 64px;
+  --container-max: 1200px;  /* content max width */
+  --container-wide: 1320px;
+  --gutter: 24px;           /* page side gutter */
+
+  /* ---- Radii ---- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;     /* default card / input radius */
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-pill: 999px;
+}

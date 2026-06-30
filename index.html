@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Superfluids — Complete Water &amp; Fluid Engineering Solutions Across UAE</title>
+<meta name="description" content="Superfluids — UAE fluid engineering: pumping systems, GRP tanks, VFDs, industrial valves, hot water and water treatment. Design, supply, installation and maintenance across Dubai and the Emirates." />
+<link rel="stylesheet" href="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/styles.css" />
+<link rel="icon" href="assets/logos/superfluids-mark.png" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/_ds_bundle.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: var(--font-body); background: var(--bg-page); color: var(--text-primary); }
+  #app { height: 100vh; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+  ::selection { background: var(--aqua-100); }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+<div id="app" data-site-scroll></div>
+<script type="text/babel" src="site/Shared.jsx"></script>
+<script type="text/babel" src="site/SiteChrome.jsx"></script>
+<script type="text/babel" src="site/HomeScreen.jsx"></script>
+<script type="text/babel" src="site/AboutScreen.jsx"></script>
+<script type="text/babel" src="site/ProductsScreen.jsx"></script>
+<script type="text/babel" src="site/ProductDetailScreen.jsx"></script>
+<script type="text/babel" src="site/ServicesScreen.jsx"></script>
+<script type="text/babel" src="site/IndustriesScreen.jsx"></script>
+<script type="text/babel" src="site/ProjectsScreen.jsx"></script>
+<script type="text/babel" src="site/ProjectDetailScreen.jsx"></script>
+<script type="text/babel" src="site/ResourcesScreen.jsx"></script>
+<script type="text/babel" src="site/ContactScreen.jsx"></script>
+<script type="text/babel" data-presets="react">
+  const { Eyebrow, Button } = window.SuperfluidsDesignSystem_e3893d;
+
+  function App() {
+    // route can be a string ("Home") or an object ({ name, param })
+    const [route, setRoute] = React.useState("Home");
+    const navigate = React.useCallback((r) => {
+      setRoute(r);
+      const el = document.getElementById("app");
+      if (el) el.scrollTo({ top: 0, behavior: "auto" });
+    }, []);
+
+    React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+
+    const name = typeof route === "string" ? route : route.name;
+    const param = typeof route === "string" ? null : route.param;
+
+    const Header = window.SF_Header, Footer = window.SF_Footer;
+    const screens = {
+      Home: window.SF_HomeScreen,
+      About: window.SF_AboutScreen,
+      Products: window.SF_ProductsScreen,
+      ProductDetail: window.SF_ProductDetailScreen,
+      Services: window.SF_ServicesScreen,
+      Industries: window.SF_IndustriesScreen,
+      Projects: window.SF_ProjectsScreen,
+      ProjectDetail: window.SF_ProjectDetailScreen,
+      Resources: window.SF_ResourcesScreen,
+      Contact: window.SF_ContactScreen,
+    };
+    const Screen = screens[name] || window.SF_HomeScreen;
+    // Map detail routes back to their parent nav item for active highlighting.
+    const activeNav = name === "ProductDetail" ? "Products" : name === "ProjectDetail" ? "Projects" : name;
+
+    return (
+      <React.Fragment>
+        <Header active={activeNav} onNavigate={navigate} />
+        {React.createElement(Screen, { onNavigate: navigate, param })}
+        <Footer onNavigate={navigate} />
+      </React.Fragment>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+</script>
+</body>
+</html>
