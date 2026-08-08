@@ -3,76 +3,117 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Superfluids — Complete Water &amp; Fluid Engineering Solutions Across UAE</title>
-<meta name="description" content="Superfluids — UAE fluid engineering: pumping systems, GRP tanks, VFDs, industrial valves, hot water and water treatment. Design, supply, installation and maintenance across Dubai and the Emirates." />
-<link rel="stylesheet" href="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/styles.css" />
+<title>Superfluids — Pumping Systems, Water Storage &amp; Fluid Engineering Across the GCC</title>
+<meta name="description" content="Superfluids supplies, installs and maintains pumping systems, GRP tanks, water heaters, VFDs, valves and chillers across the UAE, Oman, Saudi Arabia, Qatar, Bahrain and Kuwait. 6,500+ products, 30+ manufacturer partnerships." />
 <link rel="icon" href="assets/logos/superfluids-mark.png" />
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
+
+<!-- Design system tokens (colors, shadows, gradients) -->
+<link rel="stylesheet" href="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/styles.css" />
+<!-- Theme overlay: type, tracking, radius, rhythm -->
+<link rel="stylesheet" href="site/theme.css" />
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@1.30.0/dist/umd/lucide.min.js" integrity="sha384-Lehp/dEjQw2+58R4nCzfMqOECBJX6eElVUQwfl5Zu2ASFb94h94sxAx5NHZj4VTR" crossorigin="anonymous"></script>
 <script src="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/_ds_bundle.js"></script>
+
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
-  body { font-family: var(--font-body); background: var(--bg-page); color: var(--text-primary); }
-  #app { height: 100vh; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
-  ::selection { background: var(--aqua-100); }
-  a { color: inherit; }
+  html, body { height: 100%; }
+  #app { height: 100vh; overflow-y: auto; overflow-x: hidden; }
 </style>
 </head>
 <body>
-<div id="app" data-site-scroll></div>
-<script type="text/babel" src="site/Shared.jsx"></script>
-<script type="text/babel" src="site/SiteChrome.jsx"></script>
-<script type="text/babel" src="site/HomeScreen.jsx"></script>
-<script type="text/babel" src="site/AboutScreen.jsx"></script>
-<script type="text/babel" src="site/ProductsScreen.jsx"></script>
-<script type="text/babel" src="site/ProductDetailScreen.jsx"></script>
-<script type="text/babel" src="site/ServicesScreen.jsx"></script>
-<script type="text/babel" src="site/IndustriesScreen.jsx"></script>
-<script type="text/babel" src="site/ProjectsScreen.jsx"></script>
-<script type="text/babel" src="site/ProjectDetailScreen.jsx"></script>
-<script type="text/babel" src="site/ResourcesScreen.jsx"></script>
-<script type="text/babel" src="site/ContactScreen.jsx"></script>
+<div id="app" data-scroll></div>
+
+<!-- Data (plain JS) -->
+<script src="site/products.js"></script>
+<script src="site/data.js"></script>
+
+<!-- Components (JSX) -->
+<script type="text/babel" src="site/Kit.jsx"></script>
+<script type="text/babel" src="site/Chrome.jsx"></script>
+<script type="text/babel" src="site/Home.jsx"></script>
+
 <script type="text/babel" data-presets="react">
-  const { Eyebrow, Button } = window.SuperfluidsDesignSystem_e3893d;
+  // Note: `type="text/babel"` scripts share one global scope, so nothing
+  // here may reuse a top-level identifier from Kit.jsx (Section, Button…).
+  // Kit members are read off window.SFKit inside each component instead.
+
+  // Placeholder for routes not yet rebuilt in the new design language.
+  function Stub({ name, onNavigate }) {
+    const { Section, Container, Button, Eyebrow } = window.SFKit;
+    return (
+      <Section tone="light">
+        <Container width="var(--container-text)">
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, alignItems: "flex-start", padding: "48px 0" }}>
+            <Eyebrow>In progress</Eyebrow>
+            <h1 className="sf-h1">{name}</h1>
+            <p className="sf-body-lg">
+              This page is next in the rebuild. The foundation, component kit and Home page
+              are complete — the remaining templates and pages follow.
+            </p>
+            <Button variant="primary" icon="arrow-left" onClick={() => onNavigate("Home")}>
+              Back to Home
+            </Button>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
+
+  const SCREENS = {
+    Home: window.SF_HomeScreen,
+  };
+
+  const TITLES = {
+    About: "About Superfluids",
+    Products: "Products & Services",
+    ProductDetail: "Product",
+    Services: "Services",
+    ServiceDetail: "Service",
+    Industries: "Industries We Serve",
+    Projects: "Projects",
+    ProjectDetail: "Project Case Study",
+    Brands: "Our Brands & Partners",
+    Contact: "Contact",
+  };
+
+  // Detail routes highlight their parent nav item.
+  const PARENT = {
+    ProductDetail: "Products",
+    ServiceDetail: "Services",
+    ProjectDetail: "Projects",
+    Brands: "About",
+  };
 
   function App() {
-    // route can be a string ("Home") or an object ({ name, param })
     const [route, setRoute] = React.useState("Home");
+
     const navigate = React.useCallback((r) => {
       setRoute(r);
       const el = document.getElementById("app");
       if (el) el.scrollTo({ top: 0, behavior: "auto" });
     }, []);
 
-    React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
-
     const name = typeof route === "string" ? route : route.name;
     const param = typeof route === "string" ? null : route.param;
 
+    React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+
+    const Screen = SCREENS[name];
     const Header = window.SF_Header, Footer = window.SF_Footer;
-    const screens = {
-      Home: window.SF_HomeScreen,
-      About: window.SF_AboutScreen,
-      Products: window.SF_ProductsScreen,
-      ProductDetail: window.SF_ProductDetailScreen,
-      Services: window.SF_ServicesScreen,
-      Industries: window.SF_IndustriesScreen,
-      Projects: window.SF_ProjectsScreen,
-      ProjectDetail: window.SF_ProjectDetailScreen,
-      Resources: window.SF_ResourcesScreen,
-      Contact: window.SF_ContactScreen,
-    };
-    const Screen = screens[name] || window.SF_HomeScreen;
-    // Map detail routes back to their parent nav item for active highlighting.
-    const activeNav = name === "ProductDetail" ? "Products" : name === "ProjectDetail" ? "Projects" : name;
 
     return (
       <React.Fragment>
-        <Header active={activeNav} onNavigate={navigate} />
-        {React.createElement(Screen, { onNavigate: navigate, param })}
+        <Header active={PARENT[name] || name} onNavigate={navigate} />
+        {Screen
+          ? <Screen onNavigate={navigate} param={param} />
+          : <Stub name={TITLES[name] || name} onNavigate={navigate} />}
         <Footer onNavigate={navigate} />
       </React.Fragment>
     );
