@@ -35,14 +35,21 @@ function HomeScreen({ onNavigate }) {
         {/* Copy area — the droplet mark is scoped here so it never
             overlaps the partner band below. */}
         <div className="relative overflow-hidden">
+          {/* WebP is 87KB against 1.3MB for the source PNG, which still
+              serves as the fallback. Decorative, so aria-hidden. */}
           {!isMobile && (
-            <img
-              src="assets/logos/superfluids-mark.png"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-[4%] -top-[14%] h-[128%] opacity-40"
-              style={{ filter: "drop-shadow(0 24px 80px rgba(0,183,199,0.32))" }}
-            />
+            <picture>
+              <source srcSet="assets/logos/superfluids-mark.webp" type="image/webp" />
+              <img
+                src="assets/logos/superfluids-mark.png"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                className="pointer-events-none absolute -right-[4%] -top-[14%] h-[128%] opacity-40"
+                style={{ filter: "drop-shadow(0 24px 80px rgba(0,183,199,0.32))" }}
+              />
+            </picture>
           )}
 
           <div className="relative mx-auto max-w-container px-5 sm:px-gutter">

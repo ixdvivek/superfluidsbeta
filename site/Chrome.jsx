@@ -5,6 +5,17 @@
 const K = window.SFKit;
 const D = window.SFData;
 
+// WebP is 37KB against 274KB for the source PNG, which stays as the
+// fallback. Used in the pill, the overlay header and the footer.
+function Wordmark({ className }) {
+  return (
+    <picture>
+      <source srcSet="assets/logos/superfluids-wordmark-white.webp" type="image/webp" />
+      <img src="assets/logos/superfluids-wordmark-white.png" alt="Superfluids" className={className} />
+    </picture>
+  );
+}
+
 const NAV_ROUTES = {
   "Home": "Home",
   "About": "About",
@@ -71,11 +82,7 @@ function Header({ active, onNavigate }) {
             aria-label="Superfluids — home"
             className="flex h-11 items-center pr-4"
           >
-            <img
-              src="assets/logos/superfluids-wordmark-white.png"
-              alt="Superfluids"
-              className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]"
-            />
+            <Wordmark className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]" />
           </a>
 
           <span className="h-7 w-px bg-white/15" aria-hidden="true" />
@@ -126,11 +133,7 @@ function Header({ active, onNavigate }) {
           >
             {/* panel header */}
             <div className="flex items-center justify-between">
-              <img
-                src="assets/logos/superfluids-wordmark-white.png"
-                alt="Superfluids"
-                className="h-9 w-auto translate-y-[4px] sm:h-10"
-              />
+              <Wordmark className="h-9 w-auto translate-y-[4px] sm:h-10" />
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -302,7 +305,7 @@ function Footer({ onNavigate }) {
     <footer className="bg-navy-900 text-white">
       <div className="mx-auto max-w-container px-5 pb-8 pt-14 sm:px-gutter sm:pt-20">
         <div className="pb-9 sm:pb-13">
-          <img src="assets/logos/superfluids-wordmark-white.png" alt="Superfluids" className="block h-7" />
+          <Wordmark className="block h-7" />
         </div>
 
         <div className="grid gap-9 border-b border-white/10 pb-8 sm:pb-12 lg:grid-cols-[1.2fr_1fr_1fr] lg:gap-12">
