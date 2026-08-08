@@ -57,28 +57,43 @@ function Header({ active, onNavigate }) {
       >
         <div
           className={
-            "flex items-center gap-1 rounded-full bg-navy-900/95 py-2 pl-5 pr-2 shadow-xl ring-1 ring-white/10 backdrop-blur-md " +
+            "flex h-14 items-center gap-1.5 rounded-full bg-navy-900/95 py-2 pl-6 pr-2 shadow-xl ring-1 ring-white/10 backdrop-blur-md " +
             (open ? "pointer-events-none" : "pointer-events-auto")
           }
         >
+          {/* The wordmark's droplet descender fills the lower half of the
+              asset, so the word alone reads far smaller than the box.
+              Sized up accordingly and nudged down to optically centre the
+              word rather than the bounding box. */}
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); go("Home"); }}
             aria-label="Superfluids — home"
-            className="flex items-center pr-3"
+            className="flex h-11 items-center pr-4"
           >
             <img
               src="assets/logos/superfluids-wordmark-white.png"
               alt="Superfluids"
-              className="block h-[22px] w-auto sm:h-6"
+              className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]"
             />
           </a>
-          <span className="h-6 w-px bg-white/15" aria-hidden="true" />
+
+          <span className="h-7 w-px bg-white/15" aria-hidden="true" />
+
+          <a
+            href={"tel:" + D.company.phone.replace(/\s/g, "")}
+            aria-label={"Call Superfluids on " + D.company.phone}
+            title={D.company.phone}
+            className="ml-1.5 flex h-10 w-10 items-center justify-center rounded-full bg-aqua-600 text-navy-900 transition-colors duration-200 ease-out hover:bg-aqua-400"
+          >
+            <Icon name="phone" size={17} />
+          </a>
+
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="ml-1 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors duration-200 ease-out hover:bg-white/10"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors duration-200 ease-out hover:bg-white/10"
           >
             <Icon name={open ? "x" : "menu"} size={20} />
           </button>
@@ -103,74 +118,104 @@ function Header({ active, onNavigate }) {
             aria-modal="true"
             aria-label="Site menu"
             className={
-              "absolute inset-x-3 top-3 bottom-3 mx-auto flex max-w-container flex-col overflow-y-auto " +
-              "rounded-2xl bg-navy-900 p-6 shadow-overlay ring-1 ring-white/10 outline-none " +
-              "transition-all duration-[420ms] ease-out sm:inset-x-6 sm:top-5 sm:bottom-5 sm:p-10 " +
+              "absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[1080px] flex-col " +
+              "overflow-y-auto rounded-2xl bg-navy-900 p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
+              "transition-all duration-[420ms] ease-out sm:inset-x-6 sm:top-5 sm:p-7 " +
               (mounted ? "translate-y-0 scale-100 opacity-100" : "-translate-y-3 scale-[0.98] opacity-0")
             }
           >
             {/* panel header */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-center justify-between">
               <img
                 src="assets/logos/superfluids-wordmark-white.png"
                 alt="Superfluids"
-                className="h-7 w-auto sm:h-8"
+                className="h-9 w-auto translate-y-[4px] sm:h-10"
               />
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="-mr-1 -mt-1 flex h-11 w-11 items-center justify-center rounded-full text-white/70 transition-colors duration-200 ease-out hover:bg-white/10 hover:text-white"
+                className="-mr-1 flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-colors duration-200 ease-out hover:bg-white/10 hover:text-white"
               >
-                <Icon name="x" size={24} />
+                <Icon name="x" size={22} />
               </button>
             </div>
 
             {/* body */}
-            <div className="mt-10 grid flex-1 gap-10 lg:mt-14 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-              <nav className="flex flex-col">
-                {D.nav.map((label, i) => {
-                  const route = NAV_ROUTES[label];
-                  const on = route === active;
-                  return (
-                    <a
-                      key={label}
-                      href="#"
-                      onClick={(e) => { e.preventDefault(); go(route); }}
-                      style={{ transitionDelay: mounted ? `${90 + i * 45}ms` : "0ms" }}
-                      className={
-                        "group flex items-center justify-between border-b border-white/10 py-4 " +
-                        "text-2xl font-medium uppercase tracking-snug transition-all duration-500 ease-out sm:text-3xl " +
-                        (mounted ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0") + " " +
-                        (on ? "text-aqua-400" : "text-white/80 hover:text-white")
-                      }
-                    >
-                      <span className="flex items-baseline gap-4">
-                        <span className="sf-num text-xs font-semibold tracking-eyebrow text-white/25">
-                          {String(i + 1).padStart(2, "0")}
+            <div className="mt-6 grid gap-7 sm:mt-7 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+              <div className="flex flex-col">
+                {/* primary */}
+                <nav className="flex flex-col">
+                  {D.navPrimary.map((label, i) => {
+                    const route = NAV_ROUTES[label];
+                    const on = route === active;
+                    return (
+                      <a
+                        key={label}
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); go(route); }}
+                        style={{ transitionDelay: mounted ? `${80 + i * 40}ms` : "0ms" }}
+                        className={
+                          "group flex items-center justify-between border-b border-white/10 py-2.5 " +
+                          "text-lg font-medium uppercase tracking-snug transition-all duration-500 ease-out sm:text-xl " +
+                          (mounted ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0") + " " +
+                          (on ? "text-aqua-400" : "text-white/85 hover:text-white")
+                        }
+                      >
+                        <span className="flex items-baseline gap-3.5">
+                          <span className="sf-num text-[11px] font-semibold tracking-eyebrow text-white/25">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          {label}
                         </span>
-                        {label}
-                      </span>
-                      <span className="translate-x-0 text-white/25 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:text-aqua-400">
-                        <Icon name="arrow-right" size={20} />
-                      </span>
-                    </a>
-                  );
-                })}
-              </nav>
+                        <span className="text-white/25 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:text-aqua-400">
+                          <Icon name="arrow-right" size={17} />
+                        </span>
+                      </a>
+                    );
+                  })}
+                </nav>
 
-              {/* feature card */}
+                {/* secondary — compact horizontal row */}
+                <div
+                  style={{ transitionDelay: mounted ? "250ms" : "0ms" }}
+                  className={
+                    "mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 transition-all duration-500 ease-out " +
+                    (mounted ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0")
+                  }
+                >
+                  {D.navSecondary.map((label) => {
+                    const route = NAV_ROUTES[label];
+                    const on = route === active;
+                    return (
+                      <a
+                        key={label}
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); go(route); }}
+                        className={
+                          "text-[13px] font-medium uppercase tracking-eyebrow transition-colors duration-200 ease-out " +
+                          (on ? "text-aqua-400" : "text-white/55 hover:text-white")
+                        }
+                      >
+                        {label}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* feature card + actions */}
               <div
-                style={{ transitionDelay: mounted ? "260ms" : "0ms" }}
+                style={{ transitionDelay: mounted ? "230ms" : "0ms" }}
                 className={
-                  "flex flex-col gap-4 transition-all duration-500 ease-out " +
+                  "flex flex-col gap-2.5 transition-all duration-500 ease-out " +
                   (mounted ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0")
                 }
               >
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); go("Projects"); }}
-                  className="group relative block flex-1 overflow-hidden rounded-xl bg-navy-800 ring-1 ring-white/10"
-                  style={{ minHeight: 220 }}
+                  className="group relative hidden flex-1 overflow-hidden rounded-xl bg-navy-800 ring-1 ring-white/10 lg:block"
+                  style={{ minHeight: 130 }}
                 >
                   <span
                     aria-hidden="true"
@@ -178,7 +223,7 @@ function Header({ active, onNavigate }) {
                     style={{
                       backgroundImage:
                         "linear-gradient(rgba(0,183,199,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.10) 1px, transparent 1px)",
-                      backgroundSize: "32px 32px",
+                      backgroundSize: "28px 28px",
                       maskImage: "radial-gradient(120% 110% at 70% 25%, #000 30%, transparent 80%)",
                     }}
                   />
@@ -187,42 +232,42 @@ function Header({ active, onNavigate }) {
                     className="absolute inset-0"
                     style={{ background: "radial-gradient(70% 60% at 72% 28%, rgba(0,183,199,0.20), transparent 62%)" }}
                   />
-                  <span className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-                    <span className="flex flex-col gap-1">
-                      <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-aqua-400">
+                  <span className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+                    <span className="flex flex-col gap-0.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-eyebrow text-aqua-400">
                         Case studies
                       </span>
-                      <span className="text-xl font-medium tracking-snug text-white">
+                      <span className="text-[15px] font-medium tracking-snug text-white">
                         2,500+ projects across the GCC
                       </span>
                     </span>
-                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white/10 text-white transition-transform duration-300 ease-out group-hover:translate-x-1">
-                      <Icon name="arrow-right" size={18} />
+                    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-white transition-transform duration-300 ease-out group-hover:translate-x-1">
+                      <Icon name="arrow-right" size={15} />
                     </span>
                   </span>
                 </a>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <a
                     href="#"
                     onClick={(e) => { e.preventDefault(); go("Brands"); }}
-                    className="rounded-lg px-4 py-3 text-sm text-white/70 ring-1 ring-white/10 transition-colors duration-200 ease-out hover:bg-white/5 hover:text-white"
+                    className="rounded-lg px-3.5 py-2.5 text-[13px] text-white/70 ring-1 ring-white/10 transition-colors duration-200 ease-out hover:bg-white/5 hover:text-white"
                   >
                     Brands &amp; Partners
                   </a>
                   <a
                     href="#"
                     onClick={(e) => { e.preventDefault(); go("Contact"); }}
-                    className="flex items-center justify-between rounded-lg bg-aqua-600 px-4 py-3 text-sm font-medium text-navy-900 transition-colors duration-200 ease-out hover:bg-aqua-400"
+                    className="flex items-center justify-between rounded-lg bg-aqua-600 px-3.5 py-2.5 text-[13px] font-medium text-navy-900 transition-colors duration-200 ease-out hover:bg-aqua-400"
                   >
-                    Request a Quote <Icon name="arrow-right" size={16} />
+                    Request a Quote <Icon name="arrow-right" size={15} />
                   </a>
                 </div>
               </div>
             </div>
 
             {/* panel footer */}
-            <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 flex flex-col gap-1.5 border-t border-white/10 pt-4 text-[13px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
               <span>Complete water &amp; fluid engineering across the GCC.</span>
               <span className="flex flex-wrap items-center gap-x-5 gap-y-1">
                 <a href={"tel:" + D.company.phone.replace(/\s/g, "")} className="transition-colors hover:text-aqua-400">

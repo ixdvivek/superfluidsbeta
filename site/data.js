@@ -9,6 +9,11 @@ Object.assign(window.SFData, {
 
   nav: ["Home", "About", "Products & Services", "Services", "Industries", "Projects", "Contact"],
 
+  // Overlay menu hierarchy: primary items get the large vertical list,
+  // secondary sit in a compact horizontal row beneath.
+  navPrimary: ["Home", "Products & Services", "Services", "Projects"],
+  navSecondary: ["About", "Industries", "Contact"],
+
   company: {
     address: "216 Arjumand Building, 3rd Floor, Dubai Investment Park First, Green Community Village, Dubai, UAE",
     addressShort: "DIP, Dubai Investment Park, Dubai, UAE",
