@@ -516,6 +516,50 @@ function Carousel({ children, cardWidth = 340, gap = 20 }) {
   );
 }
 
+// Rotating 3D logo cylinder. Logos sit around a horizontal circle;
+// the CSS animation spins the stage, backface-visibility hides the
+// rear arc, and a horizontal mask fades both edges.
+function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark = false }) {
+  const isMobile = useMobile();
+  const w = isMobile ? 140 : itemWidth;
+  const step = 360 / logos.length;
+  // Radius that spaces items without overlap at this step angle.
+  const radius = Math.round((w / 2) / Math.tan((step / 2) * Math.PI / 180));
+
+  return (
+    <div className="sf-cylinder relative w-full" style={{ height: isMobile ? 104 : height }}>
+      <div
+        className="sf-cylinder-stage absolute inset-0"
+        style={{ "--sf-spin": speed + "s" }}
+      >
+        {logos.map((l, i) => (
+          <div
+            key={l}
+            className="sf-cylinder-item absolute left-1/2 top-1/2 flex items-center justify-center"
+            style={{
+              width: w,
+              height: isMobile ? 44 : 56,
+              marginLeft: -w / 2,
+              marginTop: isMobile ? -22 : -28,
+              transform: `rotateY(${i * step}deg) translateZ(${radius}px)`,
+            }}
+          >
+            <span
+              className={
+                "select-none whitespace-nowrap text-center font-medium tracking-snug " +
+                (onDark ? "text-white/55" : "text-gray-400")
+              }
+              style={{ fontSize: isMobile ? 15 : 19 }}
+            >
+              {l}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Logo wall — placeholder cells until real logo assets land.
 function LogoWall({ logos, columns = 5 }) {
   const isMobile = useMobile();
@@ -574,6 +618,6 @@ window.SFKit = {
   Section, Container, Grid,
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,
-  CheckList, StatBand, Tile, PillRow, Carousel, LogoWall, CTABand,
+  CheckList, StatBand, Tile, PillRow, Carousel, LogoWall, LogoCylinder, CTABand,
   Icon,
 };

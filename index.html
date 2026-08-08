@@ -13,8 +13,10 @@
 
 <!-- Design system tokens (colors, shadows, gradients) -->
 <link rel="stylesheet" href="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/styles.css" />
-<!-- Theme overlay: type, tracking, radius, rhythm -->
+<!-- Token overlay: type, tracking, radius, rhythm -->
 <link rel="stylesheet" href="site/theme.css" />
+<!-- Tailwind (compiled: npx tailwindcss -i site/tailwind.src.css -o site/tailwind.css --minify) -->
+<link rel="stylesheet" href="site/tailwind.css" />
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
@@ -23,7 +25,6 @@
 <script src="_ds/superfluids-design-system-e3893dc0-b4a9-42cd-8295-115c35d8d15b/_ds_bundle.js"></script>
 
 <style>
-  html, body { height: 100%; }
   #app { height: 100vh; overflow-y: auto; overflow-x: hidden; }
 </style>
 </head>

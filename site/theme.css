@@ -1,24 +1,25 @@
 /* ============================================================
-   Superfluids — Theme overlay (Anchor-inspired design language)
+   Superfluids — token overlay
 
-   Loaded AFTER the design-system stylesheet, so it overrides the
-   DS token layer without modifying the vendored _ds/ folder.
+   Loaded after the design-system stylesheet and before Tailwind.
+   Its only job is to redefine DS custom properties, which the
+   remaining inline-styled kit components still read via var().
 
-   Colors, shadows and gradients are intentionally NOT touched —
-   the brand palette carries over unchanged. What changes here is
-   type, tracking, weight, radius and section rhythm.
+   Base styles, type classes and utilities live in Tailwind
+   (site/tailwind.src.css → site/tailwind.css).
+
+   Colors, shadows and gradients are inherited from the design
+   system unchanged — only type, radius and rhythm are overridden.
    ============================================================ */
 
 :root {
-  /* ---- Families: Inter only ------------------------------- */
+  /* Families: Inter only. Spec figures use tabular numerals (.sf-num). */
   --font-heading: "Inter", system-ui, -apple-system, sans-serif;
   --font-heading-alt: "Inter", system-ui, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
-  /* Spec values use Inter with tabular figures rather than a
-     separate mono family — see .sf-num below. */
   --font-mono: "Inter", system-ui, sans-serif;
 
-  /* ---- Type scale (desktop) ------------------------------- */
+  /* Type scale */
   --text-display: 68px;
   --text-h1: 56px;
   --text-h2: 40px;
@@ -31,16 +32,12 @@
   --text-xs: 13px;
   --text-eyebrow: 12px;
 
-  /* ---- Weights: lighter than before ----------------------- */
+  /* Weights — lighter than the previous 800-weight headings */
   --weight-display: 500;
   --weight-heading: 500;
   --weight-subheading: 600;
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
-  --weight-bold: 700;
 
-  /* ---- Line heights --------------------------------------- */
+  /* Line heights */
   --leading-display: 1.02;
   --leading-tight: 1.08;
   --leading-snug: 1.2;
@@ -48,14 +45,14 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.7;
 
-  /* ---- Tracking: markedly tighter ------------------------- */
+  /* Tracking — markedly tighter */
   --tracking-display: -0.045em;
   --tracking-tight: -0.035em;
   --tracking-snug: -0.02em;
   --tracking-normal: -0.01em;
   --tracking-eyebrow: 0.14em;
 
-  /* ---- Radius: near-square -------------------------------- */
+  /* Radius — near-square */
   --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -64,18 +61,13 @@
   --radius-2xl: 16px;
   --radius-pill: 999px;
 
-  /* ---- Section rhythm ------------------------------------- */
+  /* Section rhythm */
   --section-y: 140px;
   --section-y-sm: 100px;
   --section-y-xs: 80px;
   --container-max: 1224px;
   --container-wide: 1224px;
-  --container-text: 720px;
   --gutter: 30px;
-
-  /* ---- Borders -------------------------------------------- */
-  --border-hairline: 1px solid var(--gray-200);
-  --border-hairline-dark: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 900px) {
@@ -85,7 +77,6 @@
     --text-h2: 28px;
     --text-h3: 22px;
     --text-h4: 20px;
-    --text-h5: 18px;
     --text-body-lg: 16px;
     --section-y: 72px;
     --section-y-sm: 56px;
@@ -94,48 +85,13 @@
   }
 }
 
-/* ============================================================
-   Base
-   ============================================================ */
+/* ------------------------------------------------------------
+   Type classes still referenced by inline-styled kit components
+   (SectionHead, Tile, CTABand, router stub). These migrate to
+   Tailwind utilities as each component is converted.
+   ------------------------------------------------------------ */
 
-* { box-sizing: border-box; }
-
-html, body { margin: 0; padding: 0; }
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  line-height: var(--leading-normal);
-  letter-spacing: var(--tracking-normal);
-  color: var(--text-primary);
-  background: var(--bg-page-alt);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Tabular, aligned figures for specs and stats */
-.sf-num {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "cv01" 1;
-}
-
-::selection { background: var(--aqua-100); }
-
-a { color: inherit; text-decoration: none; }
-
-button { font-family: inherit; }
-
-:focus-visible {
-  outline: 3px solid rgba(13, 110, 253, 0.35);
-  outline-offset: 2px;
-}
-
-/* ============================================================
-   Type primitives
-   ============================================================ */
-
-.sf-display,
-.sf-h1, .sf-h2, .sf-h3, .sf-h4 {
+.sf-display, .sf-h1, .sf-h2, .sf-h3, .sf-h4 {
   font-family: var(--font-heading);
   margin: 0;
   text-wrap: balance;
@@ -193,48 +149,5 @@ button { font-family: inherit; }
   text-wrap: pretty;
 }
 
-.sf-eyebrow {
-  display: inline-block;
-  font-size: var(--text-eyebrow);
-  font-weight: 600;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-
-.sf-on-dark { color: var(--white); }
+.sf-on-dark { color: #ffffff; }
 .sf-on-dark-muted { color: rgba(255, 255, 255, 0.66); }
-
-/* ============================================================
-   Motion
-   ============================================================ */
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-.sf-reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out);
-}
-
-.sf-reveal.is-in {
-  opacity: 1;
-  transform: none;
-}
-
-/* Hide scrollbar on horizontal carousels while keeping it scrollable */
-.sf-scroller {
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-}
-.sf-scroller::-webkit-scrollbar { display: none; }
-.sf-scroller > * { scroll-snap-align: start; }
