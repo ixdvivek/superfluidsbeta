@@ -6,7 +6,7 @@
 function HomeScreen({ onNavigate }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
-    MediaFrame, InsetCard, CheckList, Tile,
+    MediaFrame, InsetCard, CheckList, Tile, VideoBackdrop,
     PillRow, Carousel, LogoCylinder, CTABand, Icon, useMobile,
   } = window.SFKit;
   const D = window.SFData;
@@ -17,10 +17,13 @@ function HomeScreen({ onNavigate }) {
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-navy-800">
-        <span
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }}
+        {/* Drop assets/media/pages/home-hero.mp4 (+ optional .webm and
+            home-hero.jpg poster) and this lights up automatically.
+            Until then it falls back to the navy gradient. */}
+        <VideoBackdrop
+          src="assets/media/pages/home-hero.mp4"
+          webm="assets/media/pages/home-hero.webm"
+          poster="assets/media/pages/home-hero.jpg"
         />
         <span
           aria-hidden="true"

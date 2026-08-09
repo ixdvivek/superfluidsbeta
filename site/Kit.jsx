@@ -560,6 +560,80 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
   );
 }
 
+// Full-bleed video backdrop for hero bands.
+//
+// Degrades in three steps, so the page is correct at every stage:
+//   1. no file present, or the fetch 404s  → navy gradient only
+//   2. reduced motion, or small screens    → poster image, no video
+//   3. otherwise                           → looping muted video
+//
+// A navy scrim always sits above the media: white hero text needs it to
+// stay legible over moving footage, and it keeps the brand temperature
+// cool regardless of what the clip is doing.
+function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
+  const [videoOk, setVideoOk] = React.useState(false);
+  const [posterOk, setPosterOk] = React.useState(false);
+  const reduced = useMedia("(prefers-reduced-motion: reduce)");
+  const isMobile = useMobile();
+
+  // Gated on the poster: it acts as the existence probe, so no requests
+  // are made for a video that has not been supplied yet. A poster is
+  // wanted regardless — it covers the buffer before first frame.
+  const wantsVideo = !!src && posterOk && !reduced && !isMobile;
+
+  // Probe the poster separately — it may exist before the video does.
+  React.useEffect(() => {
+    if (!poster) return;
+    const img = new Image();
+    img.onload = () => setPosterOk(true);
+    img.onerror = () => setPosterOk(false);
+    img.src = poster;
+  }, [poster]);
+
+  return (
+    <React.Fragment>
+      {/* base: always painted, so a missing file is never a white hole */}
+      <span aria-hidden="true" className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
+
+      {posterOk && (
+        <span aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url(" + poster + ")" }} />
+      )}
+
+      {wantsVideo && (
+        <video
+          className={
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out " +
+            (videoOk ? "opacity-100" : "opacity-0")
+          }
+          autoPlay muted loop playsInline preload="metadata"
+          poster={posterOk ? poster : undefined}
+          aria-hidden="true" tabIndex={-1}
+          onCanPlay={() => setVideoOk(true)}
+          onError={() => setVideoOk(false)}
+        >
+          {webm && <source src={webm} type="video/webm" />}
+          <source src={src} type="video/mp4" />
+        </video>
+      )}
+
+      {/* scrim — only when there is actually media to darken */}
+      {(videoOk || posterOk) && (
+        <span aria-hidden="true" className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(100deg, rgba(8,23,40," + scrimStrength + ") 0%, rgba(8,23,40," +
+              (scrimStrength - 0.1) + ") 46%, rgba(14,35,65," + (scrimStrength - 0.35) + ") 100%)",
+          }} />
+      )}
+
+      {children}
+    </React.Fragment>
+  );
+}
+
 // Breadcrumb trail. Items: [{label, to}] — last item is the current page.
 function Breadcrumb({ items, onNavigate, onDark = false }) {
   const base = onDark ? "text-white/45" : "text-gray-400";
@@ -802,5 +876,6 @@ window.SFKit = {
   MediaFrame, InsetCard, MiniChart,
   CheckList, StatBand, Tile, PillRow, Carousel, LogoWall, LogoCylinder, CTABand,
   Breadcrumb, PageHero, SpecTable, SplitHero, Gallery, Steps, FilterSelect,
+  VideoBackdrop,
   Icon,
 };
