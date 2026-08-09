@@ -68,7 +68,7 @@ function Header({ active, onNavigate }) {
       >
         <div
           className={
-            "flex h-14 items-center gap-1.5 rounded-full bg-navy-900/95 py-2 pl-6 pr-2 shadow-xl ring-1 ring-white/10 backdrop-blur-md " +
+            "flex h-14 items-center gap-3 rounded-full bg-brand-navy py-1 pl-8 pr-3 shadow-xl " +
             (open ? "pointer-events-none" : "pointer-events-auto")
           }
         >
@@ -85,24 +85,22 @@ function Header({ active, onNavigate }) {
             <Wordmark className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]" />
           </a>
 
-          <span className="h-7 w-px bg-white/15" aria-hidden="true" />
-
           <a
             href={"tel:" + D.company.phone.replace(/\s/g, "")}
             aria-label={"Call Superfluids on " + D.company.phone}
             title={D.company.phone}
-            className="ml-1.5 flex h-10 w-10 items-center justify-center rounded-full bg-aqua-600 text-navy-900 transition-colors duration-200 ease-out hover:bg-aqua-400"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-colors duration-200 ease-out hover:bg-aqua-400"
           >
-            <Icon name="phone" size={17} />
+            <Icon name="phone" size={19} />
           </a>
 
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors duration-200 ease-out hover:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85"
           >
-            <Icon name={open ? "x" : "menu"} size={20} />
+            <Icon name={open ? "x" : "menu"} size={19} />
           </button>
         </div>
       </div>
@@ -126,7 +124,7 @@ function Header({ active, onNavigate }) {
             aria-label="Site menu"
             className={
               "absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[1080px] flex-col " +
-              "overflow-y-auto rounded-2xl bg-navy-900 p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
+              "overflow-y-auto rounded-2xl bg-brand-navy p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
               "transition-all duration-[420ms] ease-out sm:inset-x-6 sm:top-5 sm:p-7 " +
               (mounted ? "translate-y-0 scale-100 opacity-100" : "-translate-y-3 scale-[0.98] opacity-0")
             }

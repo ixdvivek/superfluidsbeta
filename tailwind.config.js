@@ -10,6 +10,8 @@ module.exports = {
         blue: { 700: "#0a55c9", 600: "#0D6EFD", 500: "#3d8bfd", 100: "#e3edfe", 50: "#eef4ff" },
         aqua: { 700: "#00919e", 600: "#00B7C7", 400: "#4fd3de", 100: "#d2f4f7", 50: "#e9fafc" },
         ink: "#1A1A1A",
+        // From the Figma header design; see note in theme.css
+        brand: { navy: "#000A33", aqua: "#54BFC6", cyan: "#03B8DA" },
         line: "#E2E8F0",
         gray: {
           50: "#F7F9FC", 100: "#EEF2F7", 200: "#E2E8F0", 300: "#CBD5E1",
@@ -18,7 +20,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["DM Sans", "system-ui", "-apple-system", "sans-serif"],
       },
       fontSize: {
         eyebrow: ["12px", { lineHeight: "1.3", letterSpacing: "0.14em" }],

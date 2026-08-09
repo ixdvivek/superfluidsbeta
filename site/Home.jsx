@@ -15,54 +15,66 @@ function HomeScreen({ onNavigate }) {
   return (
     <div>
 
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-navy-800">
-        {/* Drop assets/media/pages/home-hero.mp4 (+ optional .webm and
-            home-hero.jpg poster) and this lights up automatically.
-            Until then it falls back to the navy gradient. */}
+      {/* ── HERO ─────────────────────────────────────────
+          Matches Figma node 1:2. Bright aqua ripple footage, centred
+          copy, pill CTAs, partner row, fading to white at the base. */}
+      <section className="relative overflow-hidden bg-brand-cyan">
         <VideoBackdrop
           src="assets/media/pages/home-hero.mp4"
           webm="assets/media/pages/home-hero.webm"
           poster="assets/media/pages/home-hero.jpg"
+          baseClass="bg-brand-cyan"
+          filter="none"
+          tintClass={null}
+          /* White on this cyan is only 1.9:1 unaided. A soft radial
+             behind the copy lifts it without dimming the whole frame. */
+          scrim="radial-gradient(72% 58% at 50% 44%, rgba(0,10,51,0.46) 0%, rgba(0,10,51,0.26) 45%, rgba(0,10,51,0.06) 78%, rgba(0,10,51,0) 100%)"
         />
-        <div className="relative overflow-hidden">
-          <div className="relative mx-auto max-w-container px-5 sm:px-gutter">
-          <div className="flex max-w-[900px] flex-col gap-5 pb-14 pt-32 sm:gap-6 sm:pb-20 sm:pt-44">
-            <Reveal><Eyebrow tone="onDark">Superfluids</Eyebrow></Reveal>
 
-            <Reveal delay={70}>
-              <h1 className="text-balance text-[40px] font-medium leading-[1.04] tracking-display text-white sm:text-display">
-                Pumping Systems, Water Storage, Hot Water &amp; Energy-Efficient Fluid Solutions
-              </h1>
-            </Reveal>
+        {/* base of the hero fades into the white section beneath */}
+        <span aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[220px]"
+          style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 62%, #ffffff 100%)" }} />
 
-            <Reveal delay={140}>
-              <p className="max-w-[560px] text-pretty text-base leading-relaxed text-white/65 sm:text-lg">
-                Pumps · Heaters · Tanks · VFDs · Valves · Chillers — designed,
-                supplied, installed and maintained across the GCC.
-              </p>
-            </Reveal>
+        <div className="relative mx-auto flex max-w-container flex-col items-center px-5 pb-16 pt-40 text-center sm:px-gutter sm:pb-24 sm:pt-52">
+          <Reveal>
+            <h1 className="mx-auto max-w-[16ch] text-balance text-[38px] font-bold leading-[1.02] tracking-[-0.04em] text-white sm:max-w-[989px] sm:text-[64px] lg:text-[80px]">
+              Complete Fluid Engineering Solutions, Built to Perform.
+            </h1>
+          </Reveal>
 
-            <Reveal delay={210}>
-              <div className="mt-1 flex flex-wrap gap-3">
-                <Button variant="accent" size="lg" icon="arrow-right" onClick={() => onNavigate("Products")}>
-                  Explore Products
-                </Button>
-                <Button variant="outlineDark" size="lg" onClick={() => onNavigate("Contact")}>
-                  Request a Quote
-                </Button>
-              </div>
-            </Reveal>
+          <Reveal delay={90}>
+            <p className="mt-7 max-w-[620px] text-pretty text-base font-medium leading-[1.35] tracking-[-0.04em] text-white sm:mt-10 sm:text-xl">
+              Pumping, water storage, heating, cooling and automation —
+              engineered as one system.
+            </p>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10">
+              <button
+                onClick={() => onNavigate("Products")}
+                className="rounded-full bg-brand-navy px-5 py-3 text-[17px] font-bold tracking-[-0.04em] text-white transition-colors duration-200 ease-out hover:bg-navy-800 sm:text-lg"
+              >
+                Explore Products
+              </button>
+              <button
+                onClick={() => onNavigate("Contact")}
+                className="rounded-full bg-white px-5 py-3 text-[17px] font-bold tracking-[-0.04em] text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85 sm:text-lg"
+              >
+                Get A Quote
+              </button>
+            </div>
+          </Reveal>
+
+          {/* Partner logos — the rotating cylinder carries the same
+              element the design shows statically. */}
+          <div className="mt-16 w-full sm:mt-24">
+            <p className="mb-4 text-base font-medium tracking-[-0.04em] text-white sm:text-xl">
+              Authorised partnership with
+            </p>
+            <LogoCylinder logos={D.featuredBrands} onDark speed={46} />
           </div>
-          </div>
-        </div>
-
-        {/* Partner logos — rotating cylinder, fading at both edges */}
-        <div className="relative border-t border-white/10 py-8 sm:py-10">
-          <p className="mx-auto mb-5 max-w-container px-5 text-center text-eyebrow font-semibold uppercase tracking-eyebrow text-white/35 sm:px-gutter">
-            Authorised partner to the industry's most trusted manufacturers
-          </p>
-          <LogoCylinder logos={D.featuredBrands} onDark speed={46} />
         </div>
       </section>
 

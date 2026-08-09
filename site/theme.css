@@ -13,11 +13,11 @@
    ============================================================ */
 
 :root {
-  /* Families: Inter only. Spec figures use tabular numerals (.sf-num). */
-  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
-  --font-heading-alt: "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "Inter", system-ui, sans-serif;
+  /* Families: DM Sans only. Spec figures use tabular numerals (.sf-num). */
+  --font-heading: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-heading-alt: "DM Sans", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "DM Sans", system-ui, sans-serif;
 
   /* Type scale */
   --text-display: 68px;

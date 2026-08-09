@@ -547,7 +547,7 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
             <span
               className={
                 "select-none whitespace-nowrap text-center font-medium tracking-snug " +
-                (onDark ? "text-white/55" : "text-gray-400")
+                (onDark ? "text-white/90" : "text-gray-400")
               }
               style={{ fontSize: isMobile ? 15 : 19 }}
             >
@@ -572,10 +572,12 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
 // cool regardless of what the clip is doing.
 function VideoBackdrop({
   src, webm, poster, children, onActive,
-  // Stock water footage is bright; the hero is navy with white text.
-  // Darkening and cooling the clip in CSS keeps it on-brand and keeps
-  // the scrim light enough that the motion still reads.
+  // Defaults suit a dark navy band. Pass filter="none" plus your own
+  // scrim/tint for a light treatment.
   filter = "brightness(0.46) contrast(1.12) saturate(1.35)",
+  tintClass = "bg-navy-900/45",
+  scrim = "linear-gradient(100deg, rgba(8,23,40,0.90) 0%, rgba(8,23,40,0.74) 44%, rgba(14,35,65,0.36) 100%)",
+  baseClass,
 }) {
   const [videoOk, setVideoOk] = React.useState(false);
   const [posterOk, setPosterOk] = React.useState(false);
@@ -604,8 +606,8 @@ function VideoBackdrop({
   return (
     <React.Fragment>
       {/* base: always painted, so a missing file is never a white hole */}
-      <span aria-hidden="true" className="absolute inset-0"
-        style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
+      <span aria-hidden="true" className={"absolute inset-0 " + (baseClass || "")}
+        style={baseClass ? undefined : { background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
 
       {posterOk && (
         <span aria-hidden="true"
@@ -631,19 +633,12 @@ function VideoBackdrop({
         </video>
       )}
 
-      {/* Navy tint pushes any residual blue-cyan toward the brand hue. */}
-      {(videoOk || posterOk) && (
-        <span aria-hidden="true" className="absolute inset-0 bg-navy-900/45" />
+      {(videoOk || posterOk) && tintClass && (
+        <span aria-hidden="true" className={"absolute inset-0 " + tintClass} />
       )}
 
-      {/* Directional scrim: heaviest on the left where the headline sits,
-          lifting toward the right so the motion stays visible. */}
-      {(videoOk || posterOk) && (
-        <span aria-hidden="true" className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(100deg, rgba(8,23,40,0.90) 0%, rgba(8,23,40,0.74) 44%, rgba(14,35,65,0.36) 100%)",
-          }} />
+      {(videoOk || posterOk) && scrim && (
+        <span aria-hidden="true" className="absolute inset-0" style={{ background: scrim }} />
       )}
 
       {children}
