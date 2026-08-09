@@ -519,42 +519,58 @@ function Carousel({ children, cardWidth = 340, gap = 20 }) {
 // Rotating 3D logo cylinder. Logos sit around a horizontal circle;
 // the CSS animation spins the stage, backface-visibility hides the
 // rear arc, and a horizontal mask fades both edges.
-function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark = false }) {
+function LogoCylinder({
+  logos, height = 132, itemWidth = 190, speed = 46, onDark = false, minFaces = 9,
+}) {
   const isMobile = useMobile();
-  const w = isMobile ? 140 : itemWidth;
-  const step = 360 / logos.length;
-  // Radius that spaces items without overlap at this step angle.
+  const w = isMobile ? 130 : itemWidth;
+
+  // With only a handful of marks the cylinder reads as sparse — you see
+  // one at a time with dead space between. Repeat the set until there
+  // are enough faces for the rotation to feel continuous.
+  const faces = React.useMemo(() => {
+    if (!logos || !logos.length) return [];
+    const target = Math.max(minFaces, logos.length);
+    const out = [];
+    while (out.length < target) out.push(...logos);
+    return out.slice(0, target);
+  }, [logos, minFaces]);
+
+  const step = 360 / Math.max(faces.length, 1);
   const radius = Math.round((w / 2) / Math.tan((step / 2) * Math.PI / 180));
+  if (!faces.length) return null;
 
   return (
     <div className="sf-cylinder relative w-full" style={{ height: isMobile ? Math.round(height * 0.8) : height }}>
-      <div
-        className="sf-cylinder-stage absolute inset-0"
-        style={{ "--sf-spin": speed + "s" }}
-      >
-        {logos.map((l, i) => (
-          <div
-            key={l}
-            className="sf-cylinder-item absolute left-1/2 top-1/2 flex items-center justify-center"
-            style={{
-              width: w,
-              height: isMobile ? 40 : 48,
-              marginLeft: -w / 2,
-              marginTop: isMobile ? -20 : -24,
-              transform: `rotateY(${i * step}deg) translateZ(${radius}px)`,
-            }}
-          >
-            <span
-              className={
-                "select-none whitespace-nowrap text-center font-medium tracking-snug " +
-                (onDark ? "text-white/90" : "text-gray-400")
-              }
-              style={{ fontSize: isMobile ? 15 : 19 }}
+      <div className="sf-cylinder-stage absolute inset-0" style={{ "--sf-spin": speed + "s" }}>
+        {faces.map((l, i) => {
+          const isImg = l && typeof l === "object";
+          return (
+            <div
+              key={i}
+              className="sf-cylinder-item absolute left-1/2 top-1/2 flex items-center justify-center"
+              style={{
+                width: w, height: isMobile ? 40 : 48,
+                marginLeft: -w / 2, marginTop: isMobile ? -20 : -24,
+                transform: `rotateY(${i * step}deg) translateZ(${radius}px)`,
+              }}
             >
-              {l}
-            </span>
-          </div>
-        ))}
+              {isImg ? (
+                <img src={l.src} alt={l.name}
+                  className="h-[18px] w-auto max-w-full opacity-95 sm:h-7"
+                  loading="lazy" decoding="async" />
+              ) : (
+                <span
+                  className={
+                    "select-none whitespace-nowrap text-center font-medium tracking-snug " +
+                    (onDark ? "text-white/90" : "text-gray-400")
+                  }
+                  style={{ fontSize: isMobile ? 15 : 19 }}
+                >{l}</span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
