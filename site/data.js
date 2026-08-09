@@ -113,6 +113,13 @@ Object.assign(window.SFData, {
     { title: "Sanitaryware, Adhesives & Fittings", brands: ["RAK Ceramics", "Weber", "BASF", "GROHE", "Jaquar", "Crane", "Henry Pratt"] },
   ],
 
+  // Real manufacturer marks, white-filled for the cyan hero band.
+  partnerLogos: [
+    { name: "Wilo", src: "assets/media/brands/wilo.svg", maxWidth: 74 },
+    { name: "Grundfos", src: "assets/media/brands/grundfos.svg", maxWidth: 250 },
+    { name: "Ebara", src: "assets/media/brands/ebara.svg", maxWidth: 110 },
+  ],
+
   featuredBrands: ["Grundfos", "Wilo", "Ebara", "DAB", "Lowara", "ABB", "Schneider Electric", "Georg Fischer", "Pedrollo", "Tsurumi"],
 
   projects: [

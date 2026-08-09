@@ -16,9 +16,9 @@ function HomeScreen({ onNavigate }) {
     <div>
 
       {/* ── HERO ─────────────────────────────────────────
-          Matches Figma node 1:2. Bright aqua ripple footage, centred
-          copy, pill CTAs, partner row, fading to white at the base. */}
-      <section className="relative overflow-hidden bg-brand-cyan">
+          Fills the first fold entirely; the fade to white begins
+          only once the fold is past. Figma node 1:2. */}
+      <section className="relative flex min-h-[100svh] flex-col overflow-hidden bg-brand-cyan">
         <VideoBackdrop
           src="assets/media/pages/home-hero.mp4"
           webm="assets/media/pages/home-hero.webm"
@@ -29,27 +29,23 @@ function HomeScreen({ onNavigate }) {
           scrim={null}
         />
 
-        {/* base of the hero fades into the white section beneath */}
-        <span aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[220px]"
-          style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 62%, #ffffff 100%)" }} />
-
-        <div className="relative mx-auto flex max-w-container flex-col items-center px-5 pb-16 pt-40 text-center sm:px-gutter sm:pb-24 sm:pt-52">
+        {/* copy — vertically centred in the remaining space */}
+        <div className="relative flex flex-1 flex-col items-center justify-center px-5 pb-8 pt-28 text-center sm:px-gutter sm:pt-32">
           <Reveal>
-            <h1 className="mx-auto max-w-[16ch] text-balance text-[38px] font-bold leading-[1.02] tracking-[-0.04em] text-white sm:max-w-[989px] sm:text-[64px] lg:text-[80px]">
+            <h1 className="mx-auto max-w-[16ch] text-balance text-[34px] font-bold leading-[1.04] tracking-[-0.04em] text-white sm:max-w-[989px] sm:text-[58px] lg:text-[80px]">
               Complete Fluid Engineering Solutions, Built to Perform.
             </h1>
           </Reveal>
 
           <Reveal delay={90}>
-            <p className="mt-7 max-w-[620px] text-pretty text-base font-medium leading-[1.35] tracking-[-0.04em] text-white sm:mt-10 sm:text-xl">
+            <p className="mt-6 max-w-[620px] text-pretty text-[15px] font-medium leading-[1.4] tracking-[-0.03em] text-white sm:mt-8 sm:text-lg">
               Pumping, water storage, heating, cooling and automation —
               engineered as one system.
             </p>
           </Reveal>
 
           <Reveal delay={180}>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:mt-9">
               <button
                 onClick={() => onNavigate("Products")}
                 className="rounded-full bg-brand-navy px-[18px] py-2.5 text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 ease-out hover:bg-navy-800 sm:text-[15px]"
@@ -64,17 +60,35 @@ function HomeScreen({ onNavigate }) {
               </button>
             </div>
           </Reveal>
-
-          {/* Partner logos — the rotating cylinder carries the same
-              element the design shows statically. */}
-          <div className="mt-16 w-full sm:mt-24">
-            <p className="text-base font-medium tracking-[-0.04em] text-white sm:text-lg">
-              Authorised partnership with
-            </p>
-            <LogoCylinder logos={D.featuredBrands} onDark speed={46} height={80} />
-          </div>
         </div>
+
+        {/* partner logos — pinned to the base of the fold */}
+        <Reveal delay={260} className="sf-reveal relative px-5 pb-10 sm:px-gutter sm:pb-14">
+          <p className="mb-5 text-center text-[13px] font-medium tracking-[-0.02em] text-white sm:text-[15px]">
+            Authorised partnership with
+          </p>
+          <div className="flex flex-nowrap items-center justify-center gap-x-6 sm:flex-wrap sm:gap-x-20 sm:gap-y-6">
+            {D.partnerLogos.map((l) => (
+              <img
+                key={l.name}
+                src={l.src}
+                alt={l.name}
+                className="h-[18px] w-auto shrink-0 opacity-95 sm:h-8"
+                style={{ maxWidth: l.maxWidth }}
+                loading="lazy"
+                decoding="async"
+              />
+            ))}
+          </div>
+        </Reveal>
       </section>
+
+      {/* fade out of the fold — starts from the footage's own bottom edge */}
+      <div
+        aria-hidden="true"
+        className="h-[180px] w-full sm:h-[300px]"
+        style={{ background: "linear-gradient(180deg, #13C9D7 0%, #7FE0E8 42%, #FFFFFF 100%)" }}
+      />
 
       {/* ── COUNTERS ─────────────────────────────────────── */}
       <section className="border-b border-line bg-white py-14 sm:py-20">
