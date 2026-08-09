@@ -682,13 +682,6 @@ function PageHero({ eyebrow, title, body, crumbs, onNavigate, children, media })
     <section className="relative overflow-hidden bg-navy-800">
       <span aria-hidden="true" className="absolute inset-0"
         style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
-      <span aria-hidden="true" className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
-          maskImage: "radial-gradient(110% 100% at 74% 6%, #000 20%, transparent 78%)",
-        }} />
       <div className="relative mx-auto max-w-container px-5 pb-14 pt-28 sm:px-gutter sm:pb-20 sm:pt-36">
         {crumbs && <Breadcrumb items={crumbs} onNavigate={onNavigate} onDark />}
         <div className={"mt-6 grid gap-10 " + (media ? "lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16" : "")}>
@@ -733,13 +726,6 @@ function SplitHero({ eyebrow, title, body, highlights, crumbs, onNavigate, icon,
     <section className="relative overflow-hidden bg-navy-800">
       <span aria-hidden="true" className="absolute inset-0"
         style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
-      <span aria-hidden="true" className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
-          maskImage: "radial-gradient(110% 100% at 30% 6%, #000 20%, transparent 78%)",
-        }} />
       <div className="relative mx-auto max-w-container px-5 pb-14 pt-28 sm:px-gutter sm:pb-20 sm:pt-36">
         {crumbs && <Breadcrumb items={crumbs} onNavigate={onNavigate} onDark />}
         <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
