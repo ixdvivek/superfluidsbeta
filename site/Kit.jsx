@@ -570,7 +570,13 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
 // A navy scrim always sits above the media: white hero text needs it to
 // stay legible over moving footage, and it keeps the brand temperature
 // cool regardless of what the clip is doing.
-function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
+function VideoBackdrop({
+  src, webm, poster, children, onActive,
+  // Stock water footage is bright; the hero is navy with white text.
+  // Darkening and cooling the clip in CSS keeps it on-brand and keeps
+  // the scrim light enough that the motion still reads.
+  filter = "brightness(0.46) contrast(1.12) saturate(1.35)",
+}) {
   const [videoOk, setVideoOk] = React.useState(false);
   const [posterOk, setPosterOk] = React.useState(false);
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
@@ -590,6 +596,11 @@ function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
     img.src = poster;
   }, [poster]);
 
+  // Let the host hide decoration that would compete with live footage.
+  React.useEffect(() => {
+    if (onActive) onActive(videoOk || posterOk);
+  }, [videoOk, posterOk, onActive]);
+
   return (
     <React.Fragment>
       {/* base: always painted, so a missing file is never a white hole */}
@@ -599,7 +610,7 @@ function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
       {posterOk && (
         <span aria-hidden="true"
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url(" + poster + ")" }} />
+          style={{ backgroundImage: "url(" + poster + ")", filter }} />
       )}
 
       {wantsVideo && (
@@ -608,6 +619,7 @@ function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out " +
             (videoOk ? "opacity-100" : "opacity-0")
           }
+          style={{ filter }}
           autoPlay muted loop playsInline preload="metadata"
           poster={posterOk ? poster : undefined}
           aria-hidden="true" tabIndex={-1}
@@ -619,13 +631,18 @@ function VideoBackdrop({ src, webm, poster, children, scrimStrength = 0.88 }) {
         </video>
       )}
 
-      {/* scrim — only when there is actually media to darken */}
+      {/* Navy tint pushes any residual blue-cyan toward the brand hue. */}
+      {(videoOk || posterOk) && (
+        <span aria-hidden="true" className="absolute inset-0 bg-navy-900/45" />
+      )}
+
+      {/* Directional scrim: heaviest on the left where the headline sits,
+          lifting toward the right so the motion stays visible. */}
       {(videoOk || posterOk) && (
         <span aria-hidden="true" className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(100deg, rgba(8,23,40," + scrimStrength + ") 0%, rgba(8,23,40," +
-              (scrimStrength - 0.1) + ") 46%, rgba(14,35,65," + (scrimStrength - 0.35) + ") 100%)",
+              "linear-gradient(100deg, rgba(8,23,40,0.90) 0%, rgba(8,23,40,0.74) 44%, rgba(14,35,65,0.36) 100%)",
           }} />
       )}
 

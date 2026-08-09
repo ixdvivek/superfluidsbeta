@@ -1,2 +1,5 @@
 .localvendor/
 index.local.html
+
+# source media — encoded derivatives live in assets/media/pages/
+*.source.webm

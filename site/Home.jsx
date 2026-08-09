@@ -12,6 +12,10 @@ function HomeScreen({ onNavigate }) {
   const D = window.SFData;
   const isMobile = useMobile();
 
+  // The droplet mark and live water footage compete for the same corner,
+  // so the mark stands down whenever the backdrop has media to show.
+  const [backdropActive, setBackdropActive] = React.useState(false);
+
   return (
     <div>
 
@@ -24,6 +28,7 @@ function HomeScreen({ onNavigate }) {
           src="assets/media/pages/home-hero.mp4"
           webm="assets/media/pages/home-hero.webm"
           poster="assets/media/pages/home-hero.jpg"
+          onActive={setBackdropActive}
         />
         <span
           aria-hidden="true"
@@ -40,7 +45,7 @@ function HomeScreen({ onNavigate }) {
         <div className="relative overflow-hidden">
           {/* WebP is 87KB against 1.3MB for the source PNG, which still
               serves as the fallback. Decorative, so aria-hidden. */}
-          {!isMobile && (
+          {!isMobile && !backdropActive && (
             <picture>
               <source srcSet="assets/logos/superfluids-mark.webp" type="image/webp" />
               <img
