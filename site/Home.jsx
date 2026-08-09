@@ -26,9 +26,7 @@ function HomeScreen({ onNavigate }) {
           baseClass="bg-brand-cyan"
           filter="none"
           tintClass={null}
-          /* White on this cyan is only 1.9:1 unaided. A soft radial
-             behind the copy lifts it without dimming the whole frame. */
-          scrim="radial-gradient(72% 58% at 50% 44%, rgba(0,10,51,0.46) 0%, rgba(0,10,51,0.26) 45%, rgba(0,10,51,0.06) 78%, rgba(0,10,51,0) 100%)"
+          scrim={null}
         />
 
         {/* base of the hero fades into the white section beneath */}
@@ -54,13 +52,13 @@ function HomeScreen({ onNavigate }) {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10">
               <button
                 onClick={() => onNavigate("Products")}
-                className="rounded-full bg-brand-navy px-5 py-3 text-[17px] font-bold tracking-[-0.04em] text-white transition-colors duration-200 ease-out hover:bg-navy-800 sm:text-lg"
+                className="rounded-full bg-brand-navy px-[18px] py-2.5 text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 ease-out hover:bg-navy-800 sm:text-[15px]"
               >
                 Explore Products
               </button>
               <button
                 onClick={() => onNavigate("Contact")}
-                className="rounded-full bg-white px-5 py-3 text-[17px] font-bold tracking-[-0.04em] text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85 sm:text-lg"
+                className="rounded-full bg-white px-[18px] py-2.5 text-[14px] font-bold tracking-[-0.03em] text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85 sm:text-[15px]"
               >
                 Get A Quote
               </button>
@@ -70,10 +68,10 @@ function HomeScreen({ onNavigate }) {
           {/* Partner logos — the rotating cylinder carries the same
               element the design shows statically. */}
           <div className="mt-16 w-full sm:mt-24">
-            <p className="mb-4 text-base font-medium tracking-[-0.04em] text-white sm:text-xl">
+            <p className="text-base font-medium tracking-[-0.04em] text-white sm:text-lg">
               Authorised partnership with
             </p>
-            <LogoCylinder logos={D.featuredBrands} onDark speed={46} />
+            <LogoCylinder logos={D.featuredBrands} onDark speed={46} height={80} />
           </div>
         </div>
       </section>

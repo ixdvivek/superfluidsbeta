@@ -527,7 +527,7 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
   const radius = Math.round((w / 2) / Math.tan((step / 2) * Math.PI / 180));
 
   return (
-    <div className="sf-cylinder relative w-full" style={{ height: isMobile ? 104 : height }}>
+    <div className="sf-cylinder relative w-full" style={{ height: isMobile ? Math.round(height * 0.8) : height }}>
       <div
         className="sf-cylinder-stage absolute inset-0"
         style={{ "--sf-spin": speed + "s" }}
@@ -538,9 +538,9 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
             className="sf-cylinder-item absolute left-1/2 top-1/2 flex items-center justify-center"
             style={{
               width: w,
-              height: isMobile ? 44 : 56,
+              height: isMobile ? 40 : 48,
               marginLeft: -w / 2,
-              marginTop: isMobile ? -22 : -28,
+              marginTop: isMobile ? -20 : -24,
               transform: `rotateY(${i * step}deg) translateZ(${radius}px)`,
             }}
           >
