@@ -43,49 +43,75 @@
 <script type="text/babel" src="site/Kit.jsx"></script>
 <script type="text/babel" src="site/Chrome.jsx"></script>
 <script type="text/babel" src="site/Home.jsx"></script>
+<script type="text/babel" src="site/Products.jsx"></script>
+<script type="text/babel" src="site/ProductDetail.jsx"></script>
+<script type="text/babel" src="site/Services.jsx"></script>
+<script type="text/babel" src="site/ServiceDetail.jsx"></script>
 
 <script type="text/babel" data-presets="react">
   // Note: `type="text/babel"` scripts share one global scope, so nothing
   // here may reuse a top-level identifier from Kit.jsx (Section, Button…).
   // Kit members are read off window.SFKit inside each component instead.
 
-  // Placeholder for routes not yet rebuilt in the new design language.
-  function Stub({ name, onNavigate }) {
-    const { Section, Container, Button, Eyebrow } = window.SFKit;
-    return (
-      <Section tone="light">
-        <Container width="var(--container-text)">
-          <div style={{ display: "flex", flexDirection: "column", gap: 20, alignItems: "flex-start", padding: "48px 0" }}>
-            <Eyebrow>In progress</Eyebrow>
-            <h1 className="sf-h1">{name}</h1>
-            <p className="sf-body-lg">
-              This page is next in the rebuild. The foundation, component kit and Home page
-              are complete — the remaining templates and pages follow.
-            </p>
-            <Button variant="primary" icon="arrow-left" onClick={() => onNavigate("Home")}>
-              Back to Home
-            </Button>
-          </div>
-        </Container>
-      </Section>
-    );
-  }
+  // ---- routing ------------------------------------------------
+  // Hash-based so the static host needs no rewrite rules. Paths are
+  // written to convert directly to real routes at the Next.js move.
 
-  const SCREENS = {
-    Home: window.SF_HomeScreen,
+  const ROUTE_PATHS = {
+    Home: "",
+    About: "about",
+    Products: "products",
+    Services: "services",
+    Industries: "industries",
+    Projects: "projects",
+    Brands: "brands",
+    Contact: "contact",
+  };
+  const DETAIL_PREFIX = {
+    ProductDetail: "products",
+    ServiceDetail: "services",
+    ProjectDetail: "projects",
   };
 
+  function routeToHash(route) {
+    const name = typeof route === "string" ? route : route.name;
+    const param = typeof route === "string" ? null : route.param;
+    if (DETAIL_PREFIX[name] && param) return "#/" + DETAIL_PREFIX[name] + "/" + param;
+    return "#/" + (ROUTE_PATHS[name] || "");
+  }
+
+  function hashToRoute(hash) {
+    const parts = (hash || "").replace(/^#\/?/, "").split("/").filter(Boolean);
+    if (!parts.length) return "Home";
+    const [head, slug] = parts;
+    if (slug) {
+      const name = Object.keys(DETAIL_PREFIX).find((k) => DETAIL_PREFIX[k] === head);
+      if (name) return { name, param: slug };
+    }
+    const name = Object.keys(ROUTE_PATHS).find((k) => ROUTE_PATHS[k] === head);
+    return name || "Home";
+  }
+
+  // ---- page metadata ------------------------------------------
+
   const TITLES = {
-    About: "About Superfluids",
-    Products: "Products & Services",
-    ProductDetail: "Product",
-    Services: "Services",
-    ServiceDetail: "Service",
+    Home: "Superfluids — Pumping Systems, Water Storage & Fluid Engineering Across the GCC",
+    About: "About Superfluids — Engineering Fluid Solutions for Industrial Excellence",
+    Products: "Products & Services — Complete Fluid Engineering Solutions",
+    Services: "Services — Total MEP & Fluid Engineering",
+    Industries: "Industries We Serve — Superfluids",
+    Projects: "Projects — 2,500+ Delivered Across the GCC",
+    Brands: "Our Brands & Partners — Superfluids",
+    Contact: "Contact — Let's Engineer Your Next Project",
+  };
+
+  const STUB_LABELS = {
     Industries: "Industries We Serve",
     Projects: "Projects",
     ProjectDetail: "Project Case Study",
     Brands: "Our Brands & Partners",
     Contact: "Contact",
+    About: "About Superfluids",
   };
 
   // Detail routes highlight their parent nav item.
@@ -96,19 +122,81 @@
     Brands: "About",
   };
 
+  // Placeholder for routes not yet rebuilt in the new design language.
+  function Stub({ name, onNavigate }) {
+    const { Section, Container, Button, Eyebrow } = window.SFKit;
+    return (
+      <Section tone="light">
+        <Container width="var(--container-text)">
+          <div className="flex flex-col items-start gap-5 py-24">
+            <Eyebrow>In progress</Eyebrow>
+            <h1 className="sf-h1">{name}</h1>
+            <p className="sf-body-lg">
+              This page is next in the rebuild. Foundation, component kit, Home,
+              and the product and service templates are complete.
+            </p>
+            <Button variant="primary" icon="arrow-left" onClick={() => onNavigate("Home")}>
+              Back to Home
+            </Button>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
+
   function App() {
-    const [route, setRoute] = React.useState("Home");
+    const [route, setRoute] = React.useState(() => hashToRoute(window.location.hash));
+
+    // Browser back/forward and direct links.
+    React.useEffect(() => {
+      const onHash = () => {
+        setRoute(hashToRoute(window.location.hash));
+        const el = document.getElementById("app");
+        if (el) el.scrollTo({ top: 0, behavior: "auto" });
+      };
+      window.addEventListener("hashchange", onHash);
+      return () => window.removeEventListener("hashchange", onHash);
+    }, []);
 
     const navigate = React.useCallback((r) => {
-      setRoute(r);
-      const el = document.getElementById("app");
-      if (el) el.scrollTo({ top: 0, behavior: "auto" });
+      const next = routeToHash(r);
+      if (window.location.hash === next) {
+        const el = document.getElementById("app");
+        if (el) el.scrollTo({ top: 0, behavior: "auto" });
+      } else {
+        window.location.hash = next;
+      }
     }, []);
 
     const name = typeof route === "string" ? route : route.name;
     const param = typeof route === "string" ? null : route.param;
 
     React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+
+    // Keep the document title in step with the route, for tabs and sharing.
+    React.useEffect(() => {
+      const D = window.SFData;
+      let t = TITLES[name];
+      if (name === "ProductDetail") {
+        const p = (D.products || []).find((x) => x.slug === param);
+        t = p ? p.name + " — Superfluids" : "Product — Superfluids";
+      } else if (name === "ServiceDetail") {
+        const s = (D.services || []).find((x) => x.slug === param);
+        t = s ? s.name + " — Superfluids" : "Services — Superfluids";
+      } else if (name === "ProjectDetail") {
+        const p = (D.projects || []).find((x) => x.slug === param);
+        t = p ? p.name + " — Superfluids" : "Project — Superfluids";
+      }
+      if (t) document.title = t;
+    }, [name, param]);
+
+    const SCREENS = {
+      Home: window.SF_HomeScreen,
+      Products: window.SF_ProductsScreen,
+      ProductDetail: window.SF_ProductDetailScreen,
+      Services: window.SF_ServicesScreen,
+      ServiceDetail: window.SF_ServiceDetailScreen,
+    };
 
     const Screen = SCREENS[name];
     const Header = window.SF_Header, Footer = window.SF_Footer;
@@ -118,7 +206,7 @@
         <Header active={PARENT[name] || name} onNavigate={navigate} />
         {Screen
           ? <Screen onNavigate={navigate} param={param} />
-          : <Stub name={TITLES[name] || name} onNavigate={navigate} />}
+          : <Stub name={STUB_LABELS[name] || name} onNavigate={navigate} />}
         <Footer onNavigate={navigate} />
       </React.Fragment>
     );

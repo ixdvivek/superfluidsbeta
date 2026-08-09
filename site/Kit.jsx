@@ -560,6 +560,188 @@ function LogoCylinder({ logos, height = 132, itemWidth = 190, speed = 46, onDark
   );
 }
 
+// Breadcrumb trail. Items: [{label, to}] — last item is the current page.
+function Breadcrumb({ items, onNavigate, onDark = false }) {
+  const base = onDark ? "text-white/45" : "text-gray-400";
+  const link = onDark ? "hover:text-white" : "hover:text-navy-800";
+  const current = onDark ? "text-white/80" : "text-gray-600";
+  return (
+    <nav aria-label="Breadcrumb" className={"flex flex-wrap items-center gap-1.5 text-xs " + base}>
+      {items.map((it, i) => {
+        const last = i === items.length - 1;
+        return (
+          <React.Fragment key={it.label + i}>
+            {i > 0 && <Icon name="chevron-right" size={13} />}
+            {last || !it.to ? (
+              <span className={current} aria-current={last ? "page" : undefined}>{it.label}</span>
+            ) : (
+              <a href="#" onClick={(e) => { e.preventDefault(); onNavigate(it.to); }}
+                 className={"transition-colors duration-200 " + link}>{it.label}</a>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </nav>
+  );
+}
+
+// Interior page hero — navy band with breadcrumb, eyebrow, title, body.
+function PageHero({ eyebrow, title, body, crumbs, onNavigate, children, media }) {
+  return (
+    <section className="relative overflow-hidden bg-navy-800">
+      <span aria-hidden="true" className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
+      <span aria-hidden="true" className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)",
+          backgroundSize: "42px 42px",
+          maskImage: "radial-gradient(110% 100% at 74% 6%, #000 20%, transparent 78%)",
+        }} />
+      <div className="relative mx-auto max-w-container px-5 pb-14 pt-28 sm:px-gutter sm:pb-20 sm:pt-36">
+        {crumbs && <Breadcrumb items={crumbs} onNavigate={onNavigate} onDark />}
+        <div className={"mt-6 grid gap-10 " + (media ? "lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16" : "")}>
+          <div className="flex max-w-[760px] flex-col gap-4">
+            {eyebrow && <Eyebrow tone="onDark">{eyebrow}</Eyebrow>}
+            <h1 className="text-balance text-[32px] font-medium leading-[1.08] tracking-display text-white sm:text-h1">
+              {title}
+            </h1>
+            {body && <p className="text-pretty text-base leading-relaxed text-white/65 sm:text-lg">{body}</p>}
+            {children}
+          </div>
+          {media}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Technical specification table.
+function SpecTable({ rows }) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-line">
+      <table className="w-full border-collapse text-left">
+        <tbody>
+          {rows.map(([k, v], i) => (
+            <tr key={k} className={i % 2 ? "bg-gray-50" : "bg-white"}>
+              <th scope="row" className="w-2/5 border-b border-line px-4 py-3 text-sm font-medium text-gray-600 sm:px-5">
+                {k}
+              </th>
+              <td className="sf-num border-b border-line px-4 py-3 text-sm text-ink sm:px-5">{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Product hero: main media plus a thumbnail row, copy alongside.
+function SplitHero({ eyebrow, title, body, highlights, crumbs, onNavigate, icon, actions, thumbs = 4 }) {
+  return (
+    <section className="relative overflow-hidden bg-navy-800">
+      <span aria-hidden="true" className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg,#0E2341 0%,#081728 100%)" }} />
+      <span aria-hidden="true" className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,183,199,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,183,199,0.07) 1px, transparent 1px)",
+          backgroundSize: "42px 42px",
+          maskImage: "radial-gradient(110% 100% at 30% 6%, #000 20%, transparent 78%)",
+        }} />
+      <div className="relative mx-auto max-w-container px-5 pb-14 pt-28 sm:px-gutter sm:pb-20 sm:pt-36">
+        {crumbs && <Breadcrumb items={crumbs} onNavigate={onNavigate} onDark />}
+        <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
+          <div className="flex flex-col gap-3">
+            <MediaFrame icon={icon} label={title} ratio="4 / 3" tone="alt" />
+            <div className="grid grid-cols-4 gap-3">
+              {Array.from({ length: thumbs }).map((_, i) => (
+                <MediaFrame key={i} icon={icon} ratio="1 / 1" tone="navy" style={{ borderRadius: "var(--radius-md)" }} />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {eyebrow && <Eyebrow tone="onDark">{eyebrow}</Eyebrow>}
+            <h1 className="text-balance text-[30px] font-medium leading-[1.1] tracking-display text-white sm:text-[44px]">
+              {title}
+            </h1>
+            {body && <p className="text-pretty text-base leading-relaxed text-white/65 sm:text-lg">{body}</p>}
+            {highlights && highlights.length > 0 && (
+              <div className="mt-1">
+                <CheckList items={highlights} onDark />
+              </div>
+            )}
+            {actions && <div className="mt-3 flex flex-wrap gap-3">{actions}</div>}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Image gallery grid.
+function Gallery({ count = 6, icon = "image", labels = [] }) {
+  return (
+    <Grid cols={3} mob={2} gap={16}>
+      {Array.from({ length: count }).map((_, i) => (
+        <MediaFrame key={i} icon={icon} ratio="4 / 3" label={labels[i]} />
+      ))}
+    </Grid>
+  );
+}
+
+// Numbered process steps.
+function Steps({ steps, onDark = false }) {
+  return (
+    <ol className="m-0 list-none p-0">
+      {steps.map((s, i) => {
+        const label = typeof s === "string" ? s : s.step;
+        const detail = typeof s === "string" ? null : s.detail;
+        return (
+          <li key={label}
+            className={"flex gap-5 border-b py-5 last:border-b-0 " + (onDark ? "border-white/10" : "border-line")}>
+            <span className={"sf-num flex-none text-sm font-semibold " + (onDark ? "text-aqua-400" : "text-aqua-600")}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="flex flex-col gap-1">
+              <span className={"text-base font-medium tracking-snug " + (onDark ? "text-white" : "text-ink")}>
+                {label}
+              </span>
+              {detail && (
+                <span className={"text-sm leading-relaxed " + (onDark ? "text-white/60" : "text-gray-500")}>
+                  {detail}
+                </span>
+              )}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+// Select-style filter control.
+function FilterSelect({ label, value, options, onChange }) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-gray-400">{label}</span>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full appearance-none rounded-md border border-gray-300 bg-white py-2.5 pl-3.5 pr-9 text-sm text-ink transition-colors duration-200 hover:border-gray-400 focus:border-blue-600"
+        >
+          {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <Icon name="chevron-down" size={16} />
+        </span>
+      </div>
+    </label>
+  );
+}
+
 // Logo wall — placeholder cells until real logo assets land.
 function LogoWall({ logos, columns = 5 }) {
   const isMobile = useMobile();
@@ -619,5 +801,6 @@ window.SFKit = {
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,
   CheckList, StatBand, Tile, PillRow, Carousel, LogoWall, LogoCylinder, CTABand,
+  Breadcrumb, PageHero, SpecTable, SplitHero, Gallery, Steps, FilterSelect,
   Icon,
 };
