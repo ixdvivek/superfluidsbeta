@@ -134,65 +134,52 @@ function SectionHead({ eyebrow, title, body, align = "left", onDark = false, max
 // (2.2:1), so the accent button pairs aqua with navy text (6.7:1).
 // Navy behind white is 15:1.
 
+// Pill CTAs. The hero pair is the canonical style — every button on
+// the site inherits from here so they stay in step.
+//
+// Contrast: brand navy #000A33 behind white is 18.6:1. Aqua #54BFC6
+// behind white is only 2.1:1, so the accent variant pairs aqua with
+// navy text instead.
+
 const BTN_SIZES = {
-  sm: { padding: "9px 16px", fontSize: 14 },
-  md: { padding: "12px 22px", fontSize: 15 },
-  lg: { padding: "15px 28px", fontSize: 16 },
+  sm: "px-[14px] py-2 text-[13px]",
+  md: "px-[18px] py-2.5 text-[14px] sm:text-[15px]",
+  lg: "px-6 py-3 text-[15px] sm:text-base",
+};
+
+const BTN_VARIANTS = {
+  primary:     "bg-brand-navy text-white hover:bg-navy-800",
+  white:       "bg-white text-brand-navy hover:bg-white/85",
+  accent:      "bg-brand-aqua text-brand-navy hover:bg-aqua-400",
+  outline:     "border border-gray-300 text-brand-navy hover:bg-gray-50",
+  outlineDark: "border border-white/35 text-white hover:bg-white/10",
+  ghost:       "text-gray-600 hover:text-brand-navy",
 };
 
 function Button({
   children, variant = "primary", size = "md", icon, iconLeft,
-  onClick, href, type, fullWidth, style = {}, ...rest
+  onClick, href, type, fullWidth, className = "", ...rest
 }) {
-  const [hov, setHov] = React.useState(false);
-  const V = {
-    primary: {
-      background: hov ? "var(--navy-700)" : "var(--navy-800)",
-      color: "var(--white)", border: "1px solid transparent",
-    },
-    accent: {
-      background: hov ? "var(--aqua-400)" : "var(--aqua-600)",
-      color: "var(--navy-900)", border: "1px solid transparent",
-    },
-    outline: {
-      background: hov ? "var(--gray-50)" : "transparent",
-      color: "var(--navy-800)", border: "1px solid var(--gray-300)",
-    },
-    onDark: {
-      background: hov ? "rgba(255,255,255,0.88)" : "var(--white)",
-      color: "var(--navy-900)", border: "1px solid transparent",
-    },
-    outlineDark: {
-      background: hov ? "rgba(255,255,255,0.1)" : "transparent",
-      color: "var(--white)", border: "1px solid rgba(255,255,255,0.28)",
-    },
-    ghost: {
-      background: "transparent",
-      color: hov ? "var(--navy-800)" : "var(--gray-600)",
-      border: "1px solid transparent", padding: 0,
-    },
-  }[variant];
-
   const El = href ? "a" : "button";
+  const isGhost = variant === "ghost";
   return (
     <El
-      href={href} type={El === "button" ? (type || "button") : undefined} onClick={onClick}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{
-        display: fullWidth ? "flex" : "inline-flex",
-        width: fullWidth ? "100%" : undefined,
-        alignItems: "center", justifyContent: "center", gap: 9,
-        borderRadius: "var(--radius-sm)",
-        fontFamily: "var(--font-body)", fontWeight: 500,
-        letterSpacing: "-0.01em", cursor: "pointer", whiteSpace: "nowrap",
-        transition: "background var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out)",
-        ...BTN_SIZES[size], ...V, ...style,
-      }}
+      href={href}
+      type={El === "button" ? (type || "button") : undefined}
+      onClick={onClick}
+      className={
+        (fullWidth ? "flex w-full " : "inline-flex ") +
+        "items-center justify-center gap-2 whitespace-nowrap font-bold tracking-[-0.03em] " +
+        "transition-colors duration-200 ease-out " +
+        (isGhost ? "" : "rounded-full ") +
+        (isGhost ? "text-[14px] sm:text-[15px] " : BTN_SIZES[size] + " ") +
+        BTN_VARIANTS[variant] + " " + className
+      }
       {...rest}
     >
-      {iconLeft && <Icon name={iconLeft} size={17} />}
+      {iconLeft && <Icon name={iconLeft} size={16} />}
       {children}
-      {icon && <Icon name={icon} size={17} />}
+      {icon && <Icon name={icon} size={16} />}
     </El>
   );
 }

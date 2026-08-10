@@ -151,6 +151,33 @@ Object.assign(window.SFData, {
       tagline: "Quiet, efficient booster and storage systems across a residential community.", year: "202X", scope: "Supply · Install" },
   ],
 
+  // About page — figures differ from the home band, per the wireframe.
+  aboutStats: [
+    { value: "117", suffix: "+", label: "Projects delivered" },
+    { value: "9", suffix: "", label: "Key industries" },
+    { value: "20", suffix: "+", label: "Years expertise" },
+    { value: "4", suffix: "", label: "Capability areas" },
+  ],
+
+  excellence: [
+    { icon: "ruler", title: "Precision Design", description: "Custom-engineered solutions sized to the duty in front of us, not a catalogue default." },
+    { icon: "shield-check", title: "Reliable Infrastructure", description: "Premium components from authorised partners, backed by long-term maintenance." },
+    { icon: "leaf", title: "Energy Optimization", description: "Smart automation and VFD systems that cut lifetime running cost." },
+  ],
+
+  teamPoints: [
+    "Certified engineers and technicians",
+    "World-leading manufacturer partnerships",
+    "Comprehensive after-sales support",
+  ],
+
+  contactSubjects: [
+    "Pumping Systems", "Water Storage & Tanks", "Hot Water & Heating",
+    "Cooling & Chillers", "Control & Automation", "Irrigation",
+    "Swimming Pool Systems", "Design & Engineering", "Installation & Commissioning",
+    "Energy Audit", "Annual Maintenance Contract", "Total MEP Contracting", "Other",
+  ],
+
   projectProcess: [
     "Design verification & hydraulic calculation review",
     "Equipment supply & manifold fabrication",

@@ -51,18 +51,8 @@ function HomeScreen({ onNavigate }) {
 
             <Reveal delay={180}>
               <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:mt-9">
-                <button
-                  onClick={() => onNavigate("Products")}
-                  className="rounded-full bg-brand-navy px-[18px] py-2.5 text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 ease-out hover:bg-navy-800 sm:text-[15px]"
-                >
-                  Explore Products
-                </button>
-                <button
-                  onClick={() => onNavigate("Contact")}
-                  className="rounded-full bg-white px-[18px] py-2.5 text-[14px] font-bold tracking-[-0.03em] text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85 sm:text-[15px]"
-                >
-                  Get A Quote
-                </button>
+                <Button variant="primary" onClick={() => onNavigate("Products")}>Explore Products</Button>
+                <Button variant="white" onClick={() => onNavigate("Contact")}>Get A Quote</Button>
               </div>
             </Reveal>
           </div>
