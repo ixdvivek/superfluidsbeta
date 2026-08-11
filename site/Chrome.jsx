@@ -180,7 +180,10 @@ function Header({ active, onNavigate }) {
             aria-modal="true"
             aria-label="Site menu"
             className={
-              "sf-morph absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[1080px] flex-col " +
+              // Width is set by the content, not the viewport: the longest nav
+              // row needs 278px and the panel footer 647px, so 760px is about
+              // as tight as this copy goes before things wrap.
+              "sf-morph absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[760px] flex-col " +
               "overflow-hidden rounded-2xl bg-brand-navy p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
               "sm:inset-x-6 sm:top-5 sm:p-7"
             }
@@ -189,7 +192,7 @@ function Header({ active, onNavigate }) {
                 distorts its children, so they appear once it has grown. */}
             <div
               className={
-                "sf-morph-content flex min-h-0 flex-1 flex-col overflow-y-auto " +
+                "sf-morph-content flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden " +
                 (phase === "open" ? "opacity-100" : "opacity-0")
               }
               style={{ transitionDelay: phase === "open" ? "150ms" : "0ms" }}
@@ -200,15 +203,18 @@ function Header({ active, onNavigate }) {
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="-mr-1 flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-colors duration-200 ease-out hover:bg-white/10 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-colors duration-200 ease-out hover:bg-white/10 hover:text-white"
               >
                 <Icon name="x" size={22} />
               </button>
             </div>
 
             {/* body */}
-            <div className="mt-6 grid gap-7 sm:mt-7 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-              <div className="flex flex-col">
+            {/* min-w-0 on both tracks: a grid item defaults to min-content,
+                which lets the long nav labels push the panel wider than its
+                max-width and put a scrollbar under it. */}
+            <div className="mt-6 grid gap-7 sm:mt-7 lg:grid-cols-[1fr_264px] lg:gap-9">
+              <div className="flex min-w-0 flex-col">
                 {/* primary */}
                 <nav className="flex flex-col">
                   {D.navPrimary.map((label, i) => {
@@ -273,7 +279,7 @@ function Header({ active, onNavigate }) {
               <div
                 style={{ transitionDelay: phase === "open" ? "230ms" : "0ms" }}
                 className={
-                  "flex flex-col gap-2.5 transition-all duration-500 ease-out " +
+                  "flex min-w-0 flex-col gap-2.5 transition-all duration-500 ease-out " +
                   (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0")
                 }
               >
@@ -313,7 +319,9 @@ function Header({ active, onNavigate }) {
                   </span>
                 </a>
 
-                <div className="grid grid-cols-2 gap-2.5">
+                {/* Side by side these two need 309px; the rail is 264, so they
+                    stack once the two-column layout kicks in. */}
+                <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-1">
                   <a
                     href="#"
                     onClick={(e) => { e.preventDefault(); go("Brands"); }}
