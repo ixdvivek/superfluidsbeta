@@ -89,7 +89,7 @@ function Header({ active, onNavigate }) {
             href={"tel:" + D.company.phone.replace(/\s/g, "")}
             aria-label={"Call Superfluids on " + D.company.phone}
             title={D.company.phone}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-colors duration-200 ease-out hover:bg-aqua-400"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-aqua-400 hover:shadow-md"
           >
             <Icon name="phone" size={19} />
           </a>
@@ -98,7 +98,7 @@ function Header({ active, onNavigate }) {
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-colors duration-200 ease-out hover:bg-white/85"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand-aqua hover:shadow-md"
           >
             <Icon name={open ? "x" : "menu"} size={19} />
           </button>

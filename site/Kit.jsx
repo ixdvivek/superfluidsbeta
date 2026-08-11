@@ -147,14 +147,25 @@ const BTN_SIZES = {
   lg: "px-6 py-3 text-[15px] sm:text-base",
 };
 
+// Resting states only — every filled variant shares one hover, below.
 const BTN_VARIANTS = {
-  primary:     "bg-brand-navy text-white hover:bg-navy-800",
-  white:       "bg-white text-brand-navy hover:bg-white/85",
-  accent:      "bg-brand-aqua text-brand-navy hover:bg-aqua-400",
-  outline:     "border border-gray-300 text-brand-navy hover:bg-gray-50",
-  outlineDark: "border border-white/35 text-white hover:bg-white/10",
-  ghost:       "text-gray-600 hover:text-brand-navy",
+  primary:     "bg-brand-navy text-white",
+  white:       "bg-white text-brand-navy",
+  accent:      "bg-brand-aqua text-brand-navy",
+  outline:     "border border-gray-300 text-brand-navy",
+  outlineDark: "border border-white/35 text-white",
+  ghost:       "text-gray-600",
 };
+
+// Shared hover: lift, fill to the brand light blue, deepen the shadow.
+// Navy on #54BFC6 measures 9.1:1, so the label stays readable through
+// the transition. Motion is suppressed under prefers-reduced-motion
+// by the global rule in tailwind.src.css.
+const BTN_HOVER =
+  "hover:-translate-y-0.5 hover:bg-brand-aqua hover:text-brand-navy " +
+  "hover:border-brand-aqua hover:shadow-md active:translate-y-0";
+
+const BTN_HOVER_GHOST = "hover:-translate-y-0.5 hover:text-brand-navy";
 
 function Button({
   children, variant = "primary", size = "md", icon, iconLeft,
@@ -170,10 +181,11 @@ function Button({
       className={
         (fullWidth ? "flex w-full " : "inline-flex ") +
         "items-center justify-center gap-2 whitespace-nowrap font-bold tracking-[-0.03em] " +
-        "transition-colors duration-200 ease-out " +
+        "transition-all duration-200 ease-out " +
         (isGhost ? "" : "rounded-full ") +
         (isGhost ? "text-[14px] sm:text-[15px] " : BTN_SIZES[size] + " ") +
-        BTN_VARIANTS[variant] + " " + className
+        BTN_VARIANTS[variant] + " " +
+        (isGhost ? BTN_HOVER_GHOST : BTN_HOVER) + " " + className
       }
       {...rest}
     >

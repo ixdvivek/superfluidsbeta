@@ -45,9 +45,11 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.7;
 
-  /* Tracking — markedly tighter */
+  /* Tracking. Display keeps the Figma's -0.045em; section titles sit
+     looser — DM Sans is narrower than Inter, so the same value read
+     cramped at h2/h3 sizes. */
   --tracking-display: -0.045em;
-  --tracking-tight: -0.035em;
+  --tracking-tight: -0.018em;
   --tracking-snug: -0.02em;
   --tracking-normal: -0.01em;
   --tracking-eyebrow: 0.14em;
