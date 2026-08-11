@@ -484,9 +484,19 @@ function PillRow({ items, numbered = false, onDark = false }) {
 }
 
 // Horizontal card carousel with arrow controls.
-function Carousel({ children, cardWidth = 340, gap = 20 }) {
+// Horizontal card carousel.
+//
+// The header is rendered here rather than by the page: the arrows need
+// the scroll state, and when the page drew its own header the absolutely
+// positioned controls landed on top of its action button. Owning both
+// keeps them on one baseline with no overlap.
+function Carousel({
+  children, cardWidth = 340, gap = 20,
+  eyebrow, title, body, action,
+}) {
   const ref = React.useRef(null);
   const [state, setState] = React.useState({ start: true, end: false });
+  const isMobile = useMobile();
 
   const sync = React.useCallback(() => {
     const el = ref.current;
@@ -516,28 +526,45 @@ function Carousel({ children, cardWidth = 340, gap = 20 }) {
       onClick={() => nudge(dir)}
       disabled={disabled}
       aria-label={dir < 0 ? "Previous" : "Next"}
-      style={{
-        width: 42, height: 42, flexShrink: 0,
-        display: "inline-flex", alignItems: "center", justifyContent: "center",
-        borderRadius: "var(--radius-sm)",
-        border: "1px solid var(--gray-300)",
-        background: "var(--white)",
-        color: disabled ? "var(--gray-300)" : "var(--navy-800)",
-        cursor: disabled ? "default" : "pointer",
-        transition: "var(--transition-base)",
-      }}
+      className={
+        "inline-flex h-9 w-9 flex-none items-center justify-center rounded-full " +
+        "text-brand-navy transition-all duration-200 ease-out " +
+        (disabled
+          ? "cursor-default opacity-20"
+          : "hover:-translate-y-0.5 hover:text-brand-aqua")
+      }
     >
-      <Icon name={dir < 0 ? "arrow-left" : "arrow-right"} size={18} />
+      <Icon name={dir < 0 ? "arrow-left" : "arrow-right"} size={20} />
     </button>
   );
 
+  const controls = (
+    <div className="flex flex-none items-center gap-1">
+      <Arrow dir={-1} disabled={state.start} />
+      <Arrow dir={1} disabled={state.end} />
+    </div>
+  );
+
+  const hasHeader = eyebrow || title || body || action;
+
   return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", top: -70, right: 0, display: "flex", gap: 8 }}>
-        <Arrow dir={-1} disabled={state.start} />
-        <Arrow dir={1} disabled={state.end} />
-      </div>
-      <div ref={ref} className="sf-scroller" style={{ display: "flex", gap, paddingBottom: 4 }}>
+    <div>
+      {hasHeader && (
+        <SectionHead
+          eyebrow={eyebrow}
+          title={title}
+          body={body}
+          style={{ marginBottom: isMobile ? 28 : 44 }}
+          action={
+            <div className="flex items-center gap-4">
+              {controls}
+              {action}
+            </div>
+          }
+        />
+      )}
+
+      <div ref={ref} className="sf-scroller flex pb-1" style={{ gap }}>
         {React.Children.map(children, (c) => (
           <div style={{ flex: `0 0 ${cardWidth}px`, maxWidth: "86vw" }}>{c}</div>
         ))}

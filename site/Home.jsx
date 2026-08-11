@@ -206,18 +206,18 @@ function HomeScreen({ onNavigate }) {
 
       {/* ── FEATURED PROJECTS ────────────────────────────── */}
       <Section tone="light">
-        <SectionHead
+        <Carousel
+          cardWidth={isMobile ? 280 : 360}
+          gap={20}
           eyebrow="Featured Projects"
           title="2,500+ projects across the GCC"
           body="From petrochemical utilities in Saudi Arabia to hospital expansions in Doha."
-          style={{ marginBottom: isMobile ? 32 : 56 }}
           action={!isMobile && (
             <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Projects")}>
               View All Projects
             </Button>
           )}
-        />
-        <Carousel cardWidth={isMobile ? 280 : 360} gap={20}>
+        >
           {D.projects.slice(0, 8).map((p) => (
             <a
               key={p.slug}
