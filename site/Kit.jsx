@@ -27,6 +27,34 @@ function useMedia(query) {
 
 const useMobile = () => useMedia("(max-width: 900px)");
 
+// Pointer-origin ripple. Records where the cursor crossed the boundary
+// so the fill spreads from that point and retracts toward wherever the
+// pointer leaves — a droplet hitting the surface, which suits a fluid
+// brand better than a flat colour swap.
+function useRipple() {
+  const ref = React.useRef(null);
+  const [origin, setOrigin] = React.useState({ x: "50%", y: "50%" });
+  const [on, setOn] = React.useState(false);
+
+  const track = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setOrigin({ x: (e.clientX - r.left) + "px", y: (e.clientY - r.top) + "px" });
+  };
+
+  return {
+    ref,
+    onPointerEnter: (e) => { track(e); setOn(true); },
+    onPointerLeave: (e) => { track(e); setOn(false); },
+    rippleProps: {
+      "aria-hidden": "true",
+      className: "sf-ripple",
+      style: { left: origin.x, top: origin.y, transform: "translate(-50%,-50%) scale(" + (on ? 1 : 0) + ")" },
+    },
+  };
+}
+
 // Reveal-on-scroll. Falls back to visible if IO is unavailable.
 function Reveal({ children, delay = 0, as: As = "div", style = {}, ...rest }) {
   const ref = React.useRef(null);
@@ -161,8 +189,10 @@ const BTN_VARIANTS = {
 // Navy on #54BFC6 measures 9.1:1, so the label stays readable through
 // the transition. Motion is suppressed under prefers-reduced-motion
 // by the global rule in tailwind.src.css.
+// The aqua fill is carried by the ripple below, not a flat background,
+// so only the lift, label colour and border move here.
 const BTN_HOVER =
-  "hover:-translate-y-0.5 hover:bg-brand-aqua hover:text-brand-navy " +
+  "hover:-translate-y-0.5 hover:text-brand-navy " +
   "hover:border-brand-aqua hover:shadow-md active:translate-y-0";
 
 const BTN_HOVER_GHOST = "hover:-translate-y-0.5 hover:text-brand-navy";
@@ -173,14 +203,20 @@ function Button({
 }) {
   const El = href ? "a" : "button";
   const isGhost = variant === "ghost";
+  const r = useRipple();
+
   return (
     <El
+      ref={r.ref}
       href={href}
       type={El === "button" ? (type || "button") : undefined}
       onClick={onClick}
+      onPointerEnter={isGhost ? undefined : r.onPointerEnter}
+      onPointerLeave={isGhost ? undefined : r.onPointerLeave}
       className={
         (fullWidth ? "flex w-full " : "inline-flex ") +
-        "items-center justify-center gap-2 whitespace-nowrap font-bold tracking-[-0.03em] " +
+        "relative isolate items-center justify-center gap-2 overflow-hidden " +
+        "whitespace-nowrap font-bold tracking-[-0.03em] " +
         "transition-all duration-200 ease-out " +
         (isGhost ? "" : "rounded-full ") +
         (isGhost ? "text-[14px] sm:text-[15px] " : BTN_SIZES[size] + " ") +
@@ -189,6 +225,7 @@ function Button({
       }
       {...rest}
     >
+      {!isGhost && <span {...r.rippleProps} style={{ ...r.rippleProps.style, background: "var(--aqua-400)", zIndex: -1 }} />}
       {iconLeft && <Icon name={iconLeft} size={16} />}
       {children}
       {icon && <Icon name={icon} size={16} />}
@@ -378,26 +415,33 @@ function StatBand({ stats, onDark = true, columns }) {
 // state so the whole card transitions as one.
 function Tile({ icon, title, description, meta, onClick, compact = false }) {
   const interactive = !!onClick;
+  const r = useRipple();
 
   return (
     <div
+      ref={interactive ? r.ref : undefined}
       onClick={onClick}
+      onPointerEnter={interactive ? r.onPointerEnter : undefined}
+      onPointerLeave={interactive ? r.onPointerLeave : undefined}
       role={interactive ? "button" : undefined}
       tabIndex={interactive ? 0 : undefined}
       onKeyDown={interactive ? (e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); }
       } : undefined}
       className={
-        "group flex h-full flex-col rounded-lg border bg-white " +
-        "transition-all duration-200 ease-out " +
+        "group relative isolate flex h-full flex-col overflow-hidden rounded-lg border bg-white " +
+        "transition-all duration-300 ease-out " +
         (compact ? "gap-2 px-[22px] py-5 " : "gap-3 px-[26px] py-7 ") +
         (interactive
           ? "cursor-pointer border-line hover:-translate-y-1 hover:border-transparent " +
-            "hover:bg-brand-navy hover:shadow-lg focus-visible:-translate-y-1 " +
-            "focus-visible:border-transparent focus-visible:bg-brand-navy"
+            "hover:shadow-lg focus-visible:-translate-y-1 focus-visible:border-transparent " +
+            "focus-visible:bg-brand-navy"
           : "border-line")
       }
     >
+      {interactive && (
+        <span {...r.rippleProps} style={{ ...r.rippleProps.style, background: "var(--brand-navy, #000A33)", zIndex: -1 }} />
+      )}
       {icon && (
         <span
           className={

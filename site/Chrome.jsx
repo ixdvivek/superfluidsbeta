@@ -28,17 +28,71 @@ const NAV_ROUTES = {
 
 function Header({ active, onNavigate }) {
   const { Icon } = K;
-  const [open, setOpen] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
+  // closed → opening → open → closing → closed. The panel stays mounted
+  // through "closing" so it can animate back into the pill; a boolean
+  // would unmount it instantly and there would be no exit.
+  const [phase, setPhase] = React.useState("closed");
+  const open = phase === "opening" || phase === "open";
   const panelRef = React.useRef(null);
+  const pillRef = React.useRef(null);
+  const closeTimer = React.useRef(null);
 
-  const go = React.useCallback((r) => { setOpen(false); onNavigate(r); }, [onNavigate]);
+  const setOpen = React.useCallback((next) => {
+    setPhase((cur) => {
+      const isOpen = cur === "opening" || cur === "open";
+      const want = typeof next === "function" ? next(isOpen) : next;
+      if (want === isOpen) return cur;
+      return want ? "opening" : (cur === "closed" ? "closed" : "closing");
+    });
+  }, []);
 
-  // Mount then animate, so the panel transitions in rather than snapping.
-  React.useEffect(() => {
-    if (open) { const t = setTimeout(() => setMounted(true), 10); return () => clearTimeout(t); }
-    setMounted(false);
-  }, [open]);
+  const go = React.useCallback((r) => { setOpen(false); onNavigate(r); }, [onNavigate, setOpen]);
+
+  // FLIP: start the panel at the pill's box, then release it to its own.
+  // Scaling distorts the contents, so they stay hidden until the shape
+  // has almost finished growing.
+  React.useLayoutEffect(() => {
+    const panel = panelRef.current, pill = pillRef.current;
+    if (!panel || !pill) return;
+
+    const toPill = () => {
+      const f = pill.getBoundingClientRect(), t = panel.getBoundingClientRect();
+      if (!t.width || !t.height) return "";
+      const sx = Math.max(f.width / t.width, 0.01);
+      const sy = Math.max(f.height / t.height, 0.01);
+      const dx = (f.left + f.width / 2) - (t.left + t.width / 2);
+      const dy = (f.top + f.height / 2) - (t.top + t.height / 2);
+      return "translate(" + dx + "px," + dy + "px) scale(" + sx + "," + sy + ")";
+    };
+
+    if (phase === "opening") {
+      // The transition must be suppressed while the start state is
+      // applied. Leave it on and the panel animates *into* the collapsed
+      // box instead of starting there, so releasing a frame later moves
+      // it barely at all.
+      panel.style.transition = "none";
+      panel.style.transform = toPill();
+      panel.style.borderRadius = "9999px";
+      panel.style.opacity = "1";
+      void panel.offsetWidth;              // commit the start state
+      panel.style.transition = "";         // hand back to .sf-morph
+
+      const id = requestAnimationFrame(() => {
+        panel.style.transform = "";
+        panel.style.borderRadius = "";
+        setPhase("open");
+      });
+      return () => cancelAnimationFrame(id);
+    }
+
+    if (phase === "closing") {
+      panel.style.transform = toPill();
+      panel.style.borderRadius = "9999px";
+      panel.style.opacity = "0";
+      closeTimer.current = setTimeout(() => setPhase("closed"), 500);
+      return () => clearTimeout(closeTimer.current);
+    }
+  }, [phase]);
 
   // Escape to close; lock the scroll container while open.
   React.useEffect(() => {
@@ -67,6 +121,7 @@ function Header({ active, onNavigate }) {
         aria-hidden={open}
       >
         <div
+          ref={pillRef}
           className={
             "flex h-14 items-center gap-3 rounded-full bg-brand-navy py-1 pl-8 pr-3 shadow-xl " +
             (open ? "pointer-events-none" : "pointer-events-auto")
@@ -89,6 +144,7 @@ function Header({ active, onNavigate }) {
             href={"tel:" + D.company.phone.replace(/\s/g, "")}
             aria-label={"Call Superfluids on " + D.company.phone}
             title={D.company.phone}
+            tabIndex={open ? -1 : 0}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-aqua-400 hover:shadow-md"
           >
             <Icon name="phone" size={19} />
@@ -96,8 +152,9 @@ function Header({ active, onNavigate }) {
 
           <button
             onClick={() => setOpen((o) => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label="Open menu"
             aria-expanded={open}
+            tabIndex={open ? -1 : 0}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand-aqua hover:shadow-md"
           >
             <Icon name={open ? "x" : "menu"} size={19} />
@@ -106,13 +163,13 @@ function Header({ active, onNavigate }) {
       </div>
 
       {/* ── Overlay panel ─────────────────────────────── */}
-      {open && (
+      {phase !== "closed" && (
         <div className="fixed inset-0 z-[210]">
           <div
             onClick={() => setOpen(false)}
             className={
               "absolute inset-0 bg-navy-900/45 backdrop-blur-sm transition-opacity duration-300 ease-out " +
-              (mounted ? "opacity-100" : "opacity-0")
+              (phase === "open" ? "opacity-100" : "opacity-0")
             }
           />
 
@@ -123,12 +180,20 @@ function Header({ active, onNavigate }) {
             aria-modal="true"
             aria-label="Site menu"
             className={
-              "absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[1080px] flex-col " +
-              "overflow-y-auto rounded-2xl bg-brand-navy p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
-              "transition-all duration-[420ms] ease-out sm:inset-x-6 sm:top-5 sm:p-7 " +
-              (mounted ? "translate-y-0 scale-100 opacity-100" : "-translate-y-3 scale-[0.98] opacity-0")
+              "sf-morph absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[1080px] flex-col " +
+              "overflow-hidden rounded-2xl bg-brand-navy p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
+              "sm:inset-x-6 sm:top-5 sm:p-7"
             }
           >
+            {/* Contents held back while the panel scales — a scaled box
+                distorts its children, so they appear once it has grown. */}
+            <div
+              className={
+                "sf-morph-content flex min-h-0 flex-1 flex-col overflow-y-auto " +
+                (phase === "open" ? "opacity-100" : "opacity-0")
+              }
+              style={{ transitionDelay: phase === "open" ? "150ms" : "0ms" }}
+            >
             {/* panel header */}
             <div className="flex items-center justify-between">
               <Wordmark className="h-9 w-auto translate-y-[4px] sm:h-10" />
@@ -154,11 +219,11 @@ function Header({ active, onNavigate }) {
                         key={label}
                         href="#"
                         onClick={(e) => { e.preventDefault(); go(route); }}
-                        style={{ transitionDelay: mounted ? `${80 + i * 40}ms` : "0ms" }}
+                        style={{ transitionDelay: phase === "open" ? `${80 + i * 40}ms` : "0ms" }}
                         className={
                           "group flex items-center justify-between border-b border-white/10 py-2.5 " +
                           "text-lg font-medium uppercase tracking-snug transition-all duration-500 ease-out sm:text-xl " +
-                          (mounted ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0") + " " +
+                          (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0") + " " +
                           (on ? "text-aqua-400" : "text-white/85 hover:text-white")
                         }
                       >
@@ -178,10 +243,10 @@ function Header({ active, onNavigate }) {
 
                 {/* secondary — compact horizontal row */}
                 <div
-                  style={{ transitionDelay: mounted ? "250ms" : "0ms" }}
+                  style={{ transitionDelay: phase === "open" ? "250ms" : "0ms" }}
                   className={
                     "mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 transition-all duration-500 ease-out " +
-                    (mounted ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0")
+                    (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0")
                   }
                 >
                   {D.navSecondary.map((label) => {
@@ -206,10 +271,10 @@ function Header({ active, onNavigate }) {
 
               {/* feature card + actions */}
               <div
-                style={{ transitionDelay: mounted ? "230ms" : "0ms" }}
+                style={{ transitionDelay: phase === "open" ? "230ms" : "0ms" }}
                 className={
                   "flex flex-col gap-2.5 transition-all duration-500 ease-out " +
-                  (mounted ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0")
+                  (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0")
                 }
               >
                 <a
@@ -278,6 +343,7 @@ function Header({ active, onNavigate }) {
                   {D.company.email}
                 </a>
               </span>
+            </div>
             </div>
           </div>
         </div>
