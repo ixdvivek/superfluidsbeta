@@ -69,17 +69,15 @@
     will-change: transform;
   }
 
-  /* Morphing menu panel: grows out of the nav pill and back into it. */
+  /* Morphing menu panel: a clip rectangle grows out of the nav pill and
+     collapses back into it. Duration and easing are fitted to the reference
+     recording — 290ms measured, cubic-bezier(0.3,0.2,0.6,1) to within 2% of
+     the travel. Clipping rather than scaling keeps the type at full size and
+     the corner radius constant, which is what makes it read as a panel
+     opening rather than a box being stretched. */
   .sf-morph {
-    transform-origin: center center;
-    transition:
-      transform 460ms cubic-bezier(0.22, 1, 0.36, 1),
-      border-radius 460ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 200ms ease-out;
-    will-change: transform, border-radius;
-  }
-  .sf-morph-content {
-    transition: opacity 260ms ease-out, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: clip-path 300ms cubic-bezier(0.3, 0.2, 0.6, 1);
+    will-change: clip-path;
   }
 
   /* 3D logo cylinder — logos ride a horizontal circle, foreshortening
@@ -120,5 +118,6 @@
   .sf-reveal { opacity: 1 !important; transform: none !important; }
   /* Keep the colour feedback, drop the travel. */
   .sf-ripple { transition: none !important; }
-  .sf-morph, .sf-morph-content { transition: opacity 120ms linear !important; transform: none !important; }
+  /* No growth — the panel simply appears at full size. */
+  .sf-morph { transition: none !important; clip-path: none !important; }
 }

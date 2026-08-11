@@ -16,6 +16,10 @@ function Wordmark({ className }) {
   );
 }
 
+// Matches the panel's own rounded-3xl. The collapsed clip rounds at 28px,
+// the pill's capsule radius, so the two shapes coincide exactly.
+const CLIP_OPEN = "inset(0px 0px 0px 0px round 24px)";
+
 const NAV_ROUTES = {
   "Home": "Home",
   "About": "About",
@@ -35,6 +39,7 @@ function Header({ active, onNavigate }) {
   const open = phase === "opening" || phase === "open";
   const panelRef = React.useRef(null);
   const pillRef = React.useRef(null);
+  const pillRect = React.useRef(null);
   const closeTimer = React.useRef(null);
 
   const setOpen = React.useCallback((next) => {
@@ -48,51 +53,66 @@ function Header({ active, onNavigate }) {
 
   const go = React.useCallback((r) => { setOpen(false); onNavigate(r); }, [onNavigate, setOpen]);
 
-  // FLIP: start the panel at the pill's box, then release it to its own.
-  // Scaling distorts the contents, so they stay hidden until the shape
-  // has almost finished growing.
-  React.useLayoutEffect(() => {
-    const panel = panelRef.current, pill = pillRef.current;
-    if (!panel || !pill) return;
+  // The panel sits at its final layout the whole time; what animates is a
+  // clip rectangle growing out of the pill. Scaling — the obvious approach —
+  // squashes the type and multiplies the corner radius, so a 24px corner
+  // starts life as a ~70px blob. Clipping leaves both alone: the menu is
+  // full-size from the first frame and the corners never change.
+  const clipToPill = React.useCallback(() => {
+    const panel = panelRef.current, f = pillRect.current;
+    if (!panel || !f) return null;
+    const p = panel.getBoundingClientRect();
+    if (!p.width || !p.height) return null;
+    const px = (n) => Math.max(0, Math.round(n)) + "px";
+    return "inset(" + px(f.top - p.top) + " " + px(p.right - f.right) + " " +
+           px(p.bottom - f.bottom) + " " + px(f.left - p.left) + " round 28px)";
+  }, []);
 
-    const toPill = () => {
-      const f = pill.getBoundingClientRect(), t = panel.getBoundingClientRect();
-      if (!t.width || !t.height) return "";
-      const sx = Math.max(f.width / t.width, 0.01);
-      const sy = Math.max(f.height / t.height, 0.01);
-      const dx = (f.left + f.width / 2) - (t.left + t.width / 2);
-      const dy = (f.top + f.height / 2) - (t.top + t.height / 2);
-      return "translate(" + dx + "px," + dy + "px) scale(" + sx + "," + sy + ")";
-    };
+  React.useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
 
     if (phase === "opening") {
-      // The transition must be suppressed while the start state is
-      // applied. Leave it on and the panel animates *into* the collapsed
-      // box instead of starting there, so releasing a frame later moves
-      // it barely at all.
+      // Measured while the pill is still at rest — by "closing" it has been
+      // nudged up 8px on its way out, which would aim the collapse high.
+      if (pillRef.current) pillRect.current = pillRef.current.getBoundingClientRect();
+      const start = clipToPill();
+      if (!start) { setPhase("open"); return; }
+
+      // The transition must be suppressed while the start state is applied.
+      // Leave it on and the panel animates *into* the collapsed box instead
+      // of starting there, so releasing a frame later moves it barely at all.
       panel.style.transition = "none";
-      panel.style.transform = toPill();
-      panel.style.borderRadius = "9999px";
-      panel.style.opacity = "1";
+      panel.style.clipPath = start;
       void panel.offsetWidth;              // commit the start state
       panel.style.transition = "";         // hand back to .sf-morph
 
       const id = requestAnimationFrame(() => {
-        panel.style.transform = "";
-        panel.style.borderRadius = "";
+        panel.style.clipPath = CLIP_OPEN;
         setPhase("open");
       });
       return () => cancelAnimationFrame(id);
     }
 
     if (phase === "closing") {
-      panel.style.transform = toPill();
-      panel.style.borderRadius = "9999px";
-      panel.style.opacity = "0";
-      closeTimer.current = setTimeout(() => setPhase("closed"), 500);
-      return () => clearTimeout(closeTimer.current);
+      const reduced = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      panel.style.clipPath = clipToPill() || CLIP_OPEN;
+      void panel.offsetWidth;              // start the transition now, not
+                                           // whenever the next recalc lands
+      // Unmount when the clip has actually landed on the pill's box — both are
+      // navy and occupy the same rect by then, so the handover is invisible.
+      // The timer is only a fallback: transitionend never fires if the
+      // transition is suppressed or interrupted.
+      const done = (e) => { if (!e || e.target === panel) setPhase("closed"); };
+      panel.addEventListener("transitionend", done);
+      closeTimer.current = setTimeout(done, reduced ? 0 : 420);
+      return () => {
+        panel.removeEventListener("transitionend", done);
+        clearTimeout(closeTimer.current);
+      };
     }
-  }, [phase]);
+  }, [phase, clipToPill]);
 
   // Escape to close; lock the scroll container while open.
   React.useEffect(() => {
@@ -112,19 +132,23 @@ function Header({ active, onNavigate }) {
   return (
     <React.Fragment>
       {/* ── Floating pill — hidden while the panel is open, since the
-             panel carries its own logo and close control. ────────── */}
+             panel carries its own logo and close control. It comes back
+             with no transition: the collapsing panel lands on exactly this
+             box in the same navy, so a fade would flash a gap. ─────── */}
       <div
         className={
-          "pointer-events-none fixed inset-x-0 top-4 z-[220] flex justify-center px-4 transition-all duration-300 ease-out sm:top-6 " +
-          (open ? "-translate-y-2 opacity-0" : "translate-y-0 opacity-100")
+          "pointer-events-none fixed inset-x-0 top-4 z-[220] flex justify-center px-4 transition-all ease-out sm:top-6 " +
+          (phase === "closed"
+            ? "translate-y-0 opacity-100 duration-0"
+            : "-translate-y-2 opacity-0 duration-200")
         }
-        aria-hidden={open}
+        aria-hidden={phase !== "closed"}
       >
         <div
           ref={pillRef}
           className={
             "flex h-14 items-center gap-3 rounded-full bg-brand-navy py-1 pl-8 pr-3 shadow-xl " +
-            (open ? "pointer-events-none" : "pointer-events-auto")
+            (phase === "closed" ? "pointer-events-auto" : "pointer-events-none")
           }
         >
           {/* The wordmark's droplet descender fills the lower half of the
@@ -144,7 +168,7 @@ function Header({ active, onNavigate }) {
             href={"tel:" + D.company.phone.replace(/\s/g, "")}
             aria-label={"Call Superfluids on " + D.company.phone}
             title={D.company.phone}
-            tabIndex={open ? -1 : 0}
+            tabIndex={phase === "closed" ? 0 : -1}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-aqua-400 hover:shadow-md"
           >
             <Icon name="phone" size={19} />
@@ -154,7 +178,7 @@ function Header({ active, onNavigate }) {
             onClick={() => setOpen((o) => !o)}
             aria-label="Open menu"
             aria-expanded={open}
-            tabIndex={open ? -1 : 0}
+            tabIndex={phase === "closed" ? 0 : -1}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand-aqua hover:shadow-md"
           >
             <Icon name={open ? "x" : "menu"} size={19} />
@@ -183,20 +207,17 @@ function Header({ active, onNavigate }) {
               // Width is set by the content, not the viewport: the longest nav
               // row needs 278px and the panel footer 647px, so 760px is about
               // as tight as this copy goes before things wrap.
+              // No ring or drop shadow: clip-path cuts both away mid-animation,
+              // so they would pop in at the end. The scrim does the separating.
               "sf-morph absolute inset-x-3 top-3 mx-auto flex max-h-[calc(100vh-24px)] max-w-[760px] flex-col " +
-              "overflow-hidden rounded-2xl bg-brand-navy p-5 shadow-overlay ring-1 ring-white/10 outline-none " +
+              "overflow-hidden rounded-3xl bg-brand-navy p-5 outline-none " +
               "sm:inset-x-6 sm:top-5 sm:p-7"
             }
           >
-            {/* Contents held back while the panel scales — a scaled box
-                distorts its children, so they appear once it has grown. */}
-            <div
-              className={
-                "sf-morph-content flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden " +
-                (phase === "open" ? "opacity-100" : "opacity-0")
-              }
-              style={{ transitionDelay: phase === "open" ? "150ms" : "0ms" }}
-            >
+            {/* Nothing to hide or stagger: the contents are at full size the
+                whole time and the growing clip reveals them, top-down and
+                centre-out, exactly as the reference does. */}
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
             {/* panel header */}
             <div className="flex items-center justify-between">
               <Wordmark className="h-9 w-auto translate-y-[4px] sm:h-10" />
@@ -225,11 +246,9 @@ function Header({ active, onNavigate }) {
                         key={label}
                         href="#"
                         onClick={(e) => { e.preventDefault(); go(route); }}
-                        style={{ transitionDelay: phase === "open" ? `${80 + i * 40}ms` : "0ms" }}
                         className={
                           "group flex items-center justify-between border-b border-white/10 py-2.5 " +
-                          "text-lg font-medium uppercase tracking-snug transition-all duration-500 ease-out sm:text-xl " +
-                          (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0") + " " +
+                          "text-lg font-medium uppercase tracking-snug transition-colors duration-200 ease-out sm:text-xl " +
                           (on ? "text-aqua-400" : "text-white/85 hover:text-white")
                         }
                       >
@@ -248,13 +267,7 @@ function Header({ active, onNavigate }) {
                 </nav>
 
                 {/* secondary — compact horizontal row */}
-                <div
-                  style={{ transitionDelay: phase === "open" ? "250ms" : "0ms" }}
-                  className={
-                    "mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 transition-all duration-500 ease-out " +
-                    (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0")
-                  }
-                >
+                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
                   {D.navSecondary.map((label) => {
                     const route = NAV_ROUTES[label];
                     const on = route === active;
@@ -276,13 +289,7 @@ function Header({ active, onNavigate }) {
               </div>
 
               {/* feature card + actions */}
-              <div
-                style={{ transitionDelay: phase === "open" ? "230ms" : "0ms" }}
-                className={
-                  "flex min-w-0 flex-col gap-2.5 transition-all duration-500 ease-out " +
-                  (phase === "open" ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0")
-                }
-              >
+              <div className="flex min-w-0 flex-col gap-2.5">
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); go("Projects"); }}
