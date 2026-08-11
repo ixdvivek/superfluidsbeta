@@ -57,16 +57,54 @@
 
   /* Ripple fill — a droplet spreading from the pointer. Sized to the
      element's diagonal so it always covers, and scaled rather than
-     resized so it stays on the compositor. */
+     resized so it stays on the compositor.
+
+     What you read is the filled *area*, which goes as scale², so the two
+     directions need different curves to feel alike. This is the exit:
+     the fill drains back toward the pointer and clears quickly, so a
+     grid of cards resets cleanly when you sweep across it. */
   .sf-ripple {
     position: absolute;
     width: 240%;
     aspect-ratio: 1;
     border-radius: 9999px;
     transform: translate(-50%, -50%) scale(0);
-    transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
     will-change: transform;
+  }
+
+  /* Entry. The exit curve used both ways put half the fill down in 121ms
+     and then spent 300ms covering the last 2% — a snap followed by
+     nothing, which is what read as rushed. Plain ease-out over 460ms
+     paces the area almost evenly: 25/50/75/95% at 157/239/319/403ms. */
+  .sf-ripple.is-in {
+    transition: transform 460ms cubic-bezier(0, 0, 0.58, 1);
+  }
+
+  /* Labels and icons sitting over the fill. They must not out-run it:
+     recolouring in 200ms against a 460ms fill leaves white text on a
+     still-white card. Delayed on the way in to stay behind the leading
+     edge, prompt on the way out so nothing lags the drain. */
+  .sf-ink {
+    transition: color 200ms ease-out, background-color 200ms ease-out;
+  }
+  .group:hover .sf-ink,
+  .group:focus-visible .sf-ink {
+    transition: color 300ms cubic-bezier(0, 0, 0.58, 1) 90ms,
+                background-color 300ms cubic-bezier(0, 0, 0.58, 1) 90ms;
+  }
+
+  /* Buttons recolour their own label rather than a child's, so the whole
+     transition list has to be restated — a bare `transition: color …`
+     here would drop the lift and shadow along with it. */
+  .sf-ink-host:hover {
+    transition:
+      transform 200ms ease-out,
+      box-shadow 200ms ease-out,
+      border-color 200ms ease-out,
+      color 300ms cubic-bezier(0, 0, 0.58, 1) 90ms,
+      background-color 300ms cubic-bezier(0, 0, 0.58, 1) 90ms;
   }
 
   /* Morphing menu panel: a clip rectangle grows out of the nav pill and

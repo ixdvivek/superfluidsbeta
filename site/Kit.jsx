@@ -49,7 +49,7 @@ function useRipple() {
     onPointerLeave: (e) => { track(e); setOn(false); },
     rippleProps: {
       "aria-hidden": "true",
-      className: "sf-ripple",
+      className: "sf-ripple" + (on ? " is-in" : ""),
       style: { left: origin.x, top: origin.y, transform: "translate(-50%,-50%) scale(" + (on ? 1 : 0) + ")" },
     },
   };
@@ -217,7 +217,7 @@ function Button({
         (fullWidth ? "flex w-full " : "inline-flex ") +
         "relative isolate items-center justify-center gap-2 overflow-hidden " +
         "whitespace-nowrap font-bold tracking-[-0.03em] " +
-        "transition-all duration-200 ease-out " +
+        "sf-ink-host transition-all duration-200 ease-out " +
         (isGhost ? "" : "rounded-full ") +
         (isGhost ? "text-[14px] sm:text-[15px] " : BTN_SIZES[size] + " ") +
         BTN_VARIANTS[variant] + " " +
@@ -446,7 +446,7 @@ function Tile({ icon, title, description, meta, onClick, compact = false }) {
         <span
           className={
             "mb-1 inline-flex h-10 w-10 items-center justify-center rounded-sm " +
-            "bg-aqua-50 text-aqua-700 transition-colors duration-200 ease-out " +
+            "bg-aqua-50 text-aqua-700 sf-ink " +
             (interactive
               ? "group-hover:bg-brand-aqua group-hover:text-brand-navy " +
                 "group-focus-visible:bg-brand-aqua group-focus-visible:text-brand-navy"
@@ -459,7 +459,7 @@ function Tile({ icon, title, description, meta, onClick, compact = false }) {
 
       <h3
         className={
-          "font-semibold tracking-snug text-ink transition-colors duration-200 ease-out " +
+          "font-semibold tracking-snug text-ink sf-ink " +
           (compact ? "text-[16px] " : "text-[19px] ") +
           (interactive ? "group-hover:text-white group-focus-visible:text-white" : "")
         }
@@ -470,7 +470,7 @@ function Tile({ icon, title, description, meta, onClick, compact = false }) {
       {description && (
         <p
           className={
-            "text-[14.5px] leading-relaxed text-gray-500 transition-colors duration-200 ease-out " +
+            "text-[14.5px] leading-relaxed text-gray-500 sf-ink " +
             (interactive ? "group-hover:text-white/70 group-focus-visible:text-white/70" : "")
           }
         >
@@ -481,7 +481,7 @@ function Tile({ icon, title, description, meta, onClick, compact = false }) {
       {meta && (
         <span
           className={
-            "mt-auto pt-2.5 text-xs text-gray-400 transition-colors duration-200 ease-out " +
+            "mt-auto pt-2.5 text-xs text-gray-400 sf-ink " +
             (interactive ? "group-hover:text-white/50 group-focus-visible:text-white/50" : "")
           }
         >
@@ -490,7 +490,7 @@ function Tile({ icon, title, description, meta, onClick, compact = false }) {
       )}
 
       {interactive && (
-        <span className="mt-auto inline-flex items-center gap-2 pt-3 text-sm font-medium text-blue-600 transition-colors duration-200 ease-out group-hover:text-brand-aqua group-focus-visible:text-brand-aqua">
+        <span className="mt-auto inline-flex items-center gap-2 pt-3 text-sm font-medium text-blue-600 sf-ink group-hover:text-brand-aqua group-focus-visible:text-brand-aqua">
           View
           <span className="transition-transform duration-300 ease-out group-hover:translate-x-1">
             <Icon name="arrow-right" size={15} />
