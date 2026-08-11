@@ -373,53 +373,84 @@ function StatBand({ stats, onDark = true, columns }) {
 }
 
 // Bordered tile — product portfolio / capability grids.
+// Bordered tile. Interactive tiles invert on hover — brand navy fill,
+// white text, border dropped — driven by group-hover rather than React
+// state so the whole card transitions as one.
 function Tile({ icon, title, description, meta, onClick, compact = false }) {
-  const [hov, setHov] = React.useState(false);
   const interactive = !!onClick;
+
   return (
     <div
       onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
       role={interactive ? "button" : undefined}
       tabIndex={interactive ? 0 : undefined}
-      onKeyDown={interactive ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); } } : undefined}
-      style={{
-        display: "flex", flexDirection: "column", gap: compact ? 8 : 12,
-        padding: compact ? "20px 22px" : "28px 26px",
-        background: "var(--white)",
-        border: "1px solid " + (hov && interactive ? "var(--aqua-400)" : "var(--gray-200)"),
-        borderRadius: "var(--radius-lg)",
-        cursor: interactive ? "pointer" : "default",
-        transition: "border-color var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)",
-        boxShadow: hov && interactive ? "var(--shadow-md)" : "none",
-        height: "100%",
-      }}
+      onKeyDown={interactive ? (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); }
+      } : undefined}
+      className={
+        "group flex h-full flex-col rounded-lg border bg-white " +
+        "transition-all duration-200 ease-out " +
+        (compact ? "gap-2 px-[22px] py-5 " : "gap-3 px-[26px] py-7 ") +
+        (interactive
+          ? "cursor-pointer border-line hover:-translate-y-1 hover:border-transparent " +
+            "hover:bg-brand-navy hover:shadow-lg focus-visible:-translate-y-1 " +
+            "focus-visible:border-transparent focus-visible:bg-brand-navy"
+          : "border-line")
+      }
     >
       {icon && (
-        <span style={{
-          display: "inline-flex", alignItems: "center", justifyContent: "center",
-          width: 40, height: 40, marginBottom: 4,
-          borderRadius: "var(--radius-sm)",
-          background: hov && interactive ? "var(--aqua-600)" : "var(--aqua-50)",
-          color: hov && interactive ? "var(--navy-900)" : "var(--aqua-700)",
-          transition: "var(--transition-base)",
-        }}>
+        <span
+          className={
+            "mb-1 inline-flex h-10 w-10 items-center justify-center rounded-sm " +
+            "bg-aqua-50 text-aqua-700 transition-colors duration-200 ease-out " +
+            (interactive
+              ? "group-hover:bg-brand-aqua group-hover:text-brand-navy " +
+                "group-focus-visible:bg-brand-aqua group-focus-visible:text-brand-navy"
+              : "")
+          }
+        >
           <Icon name={icon} size={20} strokeWidth={1.9} />
         </span>
       )}
-      <h3 className="sf-h4" style={{ fontSize: compact ? 16 : 19 }}>{title}</h3>
-      {description && <p className="sf-body" style={{ fontSize: 14.5 }}>{description}</p>}
-      {meta && (
-        <span style={{ marginTop: "auto", paddingTop: 10, fontSize: 13, color: "var(--gray-400)" }}>{meta}</span>
+
+      <h3
+        className={
+          "font-semibold tracking-snug text-ink transition-colors duration-200 ease-out " +
+          (compact ? "text-[16px] " : "text-[19px] ") +
+          (interactive ? "group-hover:text-white group-focus-visible:text-white" : "")
+        }
+      >
+        {title}
+      </h3>
+
+      {description && (
+        <p
+          className={
+            "text-[14.5px] leading-relaxed text-gray-500 transition-colors duration-200 ease-out " +
+            (interactive ? "group-hover:text-white/70 group-focus-visible:text-white/70" : "")
+          }
+        >
+          {description}
+        </p>
       )}
+
+      {meta && (
+        <span
+          className={
+            "mt-auto pt-2.5 text-xs text-gray-400 transition-colors duration-200 ease-out " +
+            (interactive ? "group-hover:text-white/50 group-focus-visible:text-white/50" : "")
+          }
+        >
+          {meta}
+        </span>
+      )}
+
       {interactive && (
-        <span style={{
-          marginTop: "auto", paddingTop: 12, display: "inline-flex", alignItems: "center", gap: 7,
-          fontSize: 14, fontWeight: 500,
-          color: hov ? "var(--navy-800)" : "var(--color-secondary)",
-        }}>
-          View <Icon name="arrow-right" size={15} />
+        <span className="mt-auto inline-flex items-center gap-2 pt-3 text-sm font-medium text-blue-600 transition-colors duration-200 ease-out group-hover:text-brand-aqua group-focus-visible:text-brand-aqua">
+          View
+          <span className="transition-transform duration-300 ease-out group-hover:translate-x-1">
+            <Icon name="arrow-right" size={15} />
+          </span>
         </span>
       )}
     </div>
