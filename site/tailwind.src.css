@@ -158,6 +158,26 @@
   }
 }
 
+/* Route wash. Hash routing swaps instantly, so this is not covering
+   latency — it covers the scrollTo({top:0}) jump, which is otherwise
+   abrupt. Navy rather than white: the hero is cyan over video and every
+   interior page opens on a navy band, so a white wash would flash bright
+   against both. Out is quicker than in — the wash only has to hide the
+   jump, and the page underneath is already there on the way back. */
+#wash {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    background: #000A33;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms cubic-bezier(0, 0, 0.58, 1);
+  }
+#wash.is-on {
+    opacity: 1;
+    transition-duration: 160ms;
+  }
+
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
@@ -180,4 +200,6 @@
   .sf-brand-logo { transition: none !important; }
   /* No growth — the panel simply appears at full size. */
   .sf-morph { transition: none !important; clip-path: none !important; }
+  /* No wash — the route simply changes. */
+  #wash { transition: none !important; opacity: 0 !important; }
 }

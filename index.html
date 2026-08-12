@@ -43,6 +43,49 @@
 </style>
 </head>
 <body>
+
+<!-- Boot screen. Deliberately inline HTML and CSS, not a React component:
+     React and Babel take ~1.3s on desktop and several seconds on a phone to
+     compile the JSX, and a React loader could not appear until that work was
+     already done — which is the exact window this covers. Painted on the first
+     frame, removed once the app mounts. -->
+<style>
+  #boot {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: #000A33;
+    transition: opacity 420ms cubic-bezier(0, 0, 0.58, 1);
+  }
+  #boot.is-done { opacity: 0; pointer-events: none; }
+  #boot .mark { position: relative; width: 104px; height: 104px;
+                display: flex; align-items: center; justify-content: center; }
+  /* The icon's canvas is 50x50 but the droplet is narrow and fills the
+     height, so size by height — at width:34px the visible mark was ~12px. */
+  #boot img { height: 58px; width: auto; display: block; }
+  #boot svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #boot circle {
+    fill: none; stroke: #3ABDC4; stroke-width: 2.5; stroke-linecap: round;
+    /* r=46 -> circumference 289. A 70/289 arc leaves a clear gap. */
+    stroke-dasharray: 70 219;
+    transform-origin: 50% 50%;
+    animation: boot-spin 1150ms linear infinite;
+  }
+  @keyframes boot-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    #boot circle { animation: none; stroke-dasharray: 289; opacity: 0.32; }
+  }
+</style>
+<div id="boot">
+  <div class="mark">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" /></svg>
+    <img src="assets/logos/superfluids-icon-teal.svg" alt="Superfluids — loading" />
+  </div>
+</div>
+
+<!-- Route wash. Same navy, so a page change reads as the same surface
+     closing and reopening rather than a white flash between two dark pages. -->
+<div id="wash" aria-hidden="true"></div>
+
 <div id="app" data-scroll></div>
 
 <!-- Data (plain JS) -->
@@ -175,14 +218,34 @@
       return () => window.removeEventListener("hashchange", onHash);
     }, []);
 
+    // Wash over the swap. The route change itself is instant; what needs
+    // covering is the scroll reset, which is otherwise an abrupt jump.
     const navigate = React.useCallback((r) => {
       const next = routeToHash(r);
-      if (window.location.hash === next) {
-        const el = document.getElementById("app");
-        if (el) el.scrollTo({ top: 0, behavior: "auto" });
-      } else {
-        window.location.hash = next;
-      }
+      const same = window.location.hash === next;
+      const wash = document.getElementById("wash");
+      const reduced = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const swap = () => {
+        if (same) {
+          const el = document.getElementById("app");
+          if (el) el.scrollTo({ top: 0, behavior: "auto" });
+        } else {
+          window.location.hash = next;
+        }
+      };
+
+      if (!wash || reduced) { swap(); return; }
+
+      // Cover, hold, swap, uncover. The hold matters: releasing on the next
+      // frame let the fade-out begin before the cover was complete, so the
+      // scroll reset showed through at ~0.6 opacity.
+      wash.classList.add("is-on");
+      window.setTimeout(() => {
+        swap();
+        window.setTimeout(() => wash.classList.remove("is-on"), 90);
+      }, 175);
     }, []);
 
     const name = typeof route === "string" ? route : route.name;
@@ -236,6 +299,17 @@
   }
 
   ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+
+  // Hold the boot screen until the app has actually painted, then fade it.
+  // Two frames: the first commits React's DOM, the second lets it paint.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const boot = document.getElementById("boot");
+    if (!boot) return;
+    boot.classList.add("is-done");
+    boot.addEventListener("transitionend", () => boot.remove(), { once: true });
+    // Fallback: transitionend never fires under reduced motion.
+    setTimeout(() => boot.remove(), 700);
+  }));
 </script>
 </body>
 </html>
