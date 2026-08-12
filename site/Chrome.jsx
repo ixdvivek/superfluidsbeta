@@ -20,7 +20,7 @@ const NAV_ROUTES = {
 };
 
 function Header({ active, onNavigate }) {
-  const { Icon } = K;
+  const { Icon, NavGlyph } = K;
   // closed → opening → open → closing → closed. The panel stays mounted
   // through "closing" so it can animate back into the pill; a boolean
   // would unmount it instantly and there would be no exit.
@@ -136,7 +136,12 @@ function Header({ active, onNavigate }) {
         <div
           ref={pillRef}
           className={
-            "flex h-14 items-center gap-3 rounded-full bg-brand-navy py-1 pl-8 pr-3 shadow-xl " +
+            // pr must equal the vertical gap, not exceed it. A circle inside a
+            // capsule end is only evenly spaced when it is concentric with
+            // that end cap: at pr-3 the button sat 6px inside the cap centre,
+            // which put its arc clearance at exactly 0 — touching the edge.
+            // (56 - 44) / 2 = 6px on all three sides.
+            "flex h-14 items-center gap-3 rounded-full bg-brand-navy py-1 pl-8 pr-1.5 shadow-xl " +
             (phase === "closed" ? "pointer-events-auto" : "pointer-events-none")
           }
         >
@@ -159,9 +164,9 @@ function Header({ active, onNavigate }) {
             aria-label={"Call Superfluids on " + D.company.phone}
             title={D.company.phone}
             tabIndex={phase === "closed" ? 0 : -1}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-aqua-400 hover:shadow-md"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-aqua text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-aqua-400 hover:shadow-md"
           >
-            <Icon name="phone" size={19} />
+            <NavGlyph name="phone" size={18} />
           </a>
 
           <button
@@ -171,7 +176,9 @@ function Header({ active, onNavigate }) {
             tabIndex={phase === "closed" ? 0 : -1}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-navy transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand-aqua hover:shadow-md"
           >
-            <Icon name={open ? "x" : "menu"} size={19} />
+            {/* Always the menu glyph — the pill is hidden while the panel is
+                open, so the close state never renders here. */}
+            <NavGlyph name="menu" size={18} />
           </button>
         </div>
       </div>

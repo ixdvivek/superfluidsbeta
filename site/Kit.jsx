@@ -97,6 +97,24 @@ function Logo({ variant = "wordmark-white", className = "", alt = "Superfluids" 
   );
 }
 
+// Filled nav glyphs from the Figma design (assets/icons/*.svg), which
+// replace Lucide's line icons in the pill.
+//
+// Loaded as a CSS mask rather than an <img> or an inlined path: the file
+// stays the single source of truth, and the glyph paints in currentColor
+// so it follows the button's hover state. The fill baked into each file is
+// irrelevant under a mask — only its alpha is read.
+function NavGlyph({ name, size = 20, className = "" }) {
+  const url = "url(assets/icons/" + name + ".svg)";
+  return (
+    <span
+      aria-hidden="true"
+      className={"sf-glyph block flex-none " + className}
+      style={{ width: size, height: size, WebkitMaskImage: url, maskImage: url }}
+    />
+  );
+}
+
 // A brand logo in a card, with the name beneath it — a logo alone is hard to
 // place unless you already know the mark.
 //
@@ -1084,7 +1102,7 @@ function CTABand({ title, body, primary, secondary, onNavigate }) {
 }
 
 window.SFKit = {
-  useMedia, useMobile, Reveal, Logo, BrandTile,
+  useMedia, useMobile, Reveal, Logo, BrandTile, NavGlyph,
   Section, Container, Grid,
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,

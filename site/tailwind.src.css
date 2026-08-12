@@ -118,6 +118,17 @@
     will-change: clip-path;
   }
 
+  /* Figma nav glyphs, painted through a mask so they take currentColor. */
+  .sf-glyph {
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
   /* Brand wall. Colour is held back at rest so no single logo dominates the
      group; each carries its own brightness correction because greyscale
      preserves luminance, and a yellow mark greys out far paler than a black
