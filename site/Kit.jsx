@@ -55,6 +55,45 @@ function useRipple() {
   };
 }
 
+// ---- brand marks --------------------------------------------
+//
+// Every logo in the project renders through here, so switching to a new
+// set of files is a change to this table alone.
+//
+// TODO: the Figma file (uoTagj62uZCjBvcaxMbRu6) carries the canonical
+// variants — "Logo - white" (1:772), "Logo - dark" (1:1195) and four
+// icons: default (1:1419), Dark (1:1450), Teal (1:1837), White (1:2223).
+// They could not be fetched: every figma.com host returns 403 from this
+// sandbox's egress proxy. The paths below still point at the older
+// exports, which are the same artwork on a slightly tighter crop
+// (ink ratio 3.18 against Figma's 3.42).
+const LOGO_SRC = {
+  "wordmark-white": {
+    webp: "assets/logos/superfluids-wordmark-white.webp",
+    png: "assets/logos/superfluids-wordmark-white.png",
+  },
+  "wordmark-navy": {
+    webp: "assets/logos/superfluids-wordmark-navy.webp",
+    png: "assets/logos/superfluids-wordmark-navy.png",
+  },
+  "icon-navy": {
+    webp: "assets/logos/superfluids-mark.webp",
+    png: "assets/logos/superfluids-mark.png",
+  },
+  "icon-white": { png: "assets/logos/superfluids-mark-white.png" },
+  // "icon-teal" awaits the Figma export; nothing references it yet.
+};
+
+function Logo({ variant = "wordmark-white", className = "", alt = "Superfluids" }) {
+  const src = LOGO_SRC[variant] || LOGO_SRC["wordmark-white"];
+  return (
+    <picture>
+      {src.webp && <source srcSet={src.webp} type="image/webp" />}
+      <img src={src.png} alt={alt} className={className} />
+    </picture>
+  );
+}
+
 // Reveal-on-scroll. Falls back to visible if IO is unavailable.
 function Reveal({ children, delay = 0, as: As = "div", style = {}, ...rest }) {
   const ref = React.useRef(null);
@@ -985,7 +1024,7 @@ function CTABand({ title, body, primary, secondary, onNavigate }) {
 }
 
 window.SFKit = {
-  useMedia, useMobile, Reveal,
+  useMedia, useMobile, Reveal, Logo,
   Section, Container, Grid,
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,

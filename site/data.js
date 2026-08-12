@@ -16,6 +16,13 @@ Object.assign(window.SFData, {
 
   company: {
     address: "216 Arjumand Building, 3rd Floor, Dubai Investment Park First, Green Community Village, Dubai, UAE",
+    // The footer sets the address on three lines, broken where the Figma
+    // design breaks it rather than wherever the column happens to run out.
+    addressLines: [
+      "216 Arjumand Building, 3rd Floor,",
+      "Dubai Investment Park First,",
+      "Green Community Village, Dubai, UAE.",
+    ],
     addressShort: "DIP, Dubai Investment Park, Dubai, UAE",
     phone: "+971 55 924 3822",
     email: "Sales@superfluidsme.com",

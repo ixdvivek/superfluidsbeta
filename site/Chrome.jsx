@@ -5,17 +5,6 @@
 const K = window.SFKit;
 const D = window.SFData;
 
-// WebP is 37KB against 274KB for the source PNG, which stays as the
-// fallback. Used in the pill, the overlay header and the footer.
-function Wordmark({ className }) {
-  return (
-    <picture>
-      <source srcSet="assets/logos/superfluids-wordmark-white.webp" type="image/webp" />
-      <img src="assets/logos/superfluids-wordmark-white.png" alt="Superfluids" className={className} />
-    </picture>
-  );
-}
-
 // Matches the panel's own rounded-3xl. The collapsed clip rounds at 28px,
 // the pill's capsule radius, so the two shapes coincide exactly.
 const CLIP_OPEN = "inset(0px 0px 0px 0px round 24px)";
@@ -161,7 +150,7 @@ function Header({ active, onNavigate }) {
             aria-label="Superfluids — home"
             className="flex h-11 items-center pr-4"
           >
-            <Wordmark className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]" />
+            <K.Logo variant="wordmark-white" className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]" />
           </a>
 
           <a
@@ -220,7 +209,7 @@ function Header({ active, onNavigate }) {
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
             {/* panel header */}
             <div className="flex items-center justify-between">
-              <Wordmark className="h-9 w-auto translate-y-[4px] sm:h-10" />
+              <K.Logo variant="wordmark-white" className="h-9 w-auto translate-y-[4px] sm:h-10" />
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -367,65 +356,108 @@ function Header({ active, onNavigate }) {
   );
 }
 
+// Footer per Figma node 6:2. Two bands: three text columns on top, then
+// an oversized wordmark paired with the contact block. The design drops
+// the copyright and markets line — they exist in the file but the
+// designer left the frame hidden.
 function Footer({ onNavigate }) {
-  const { Icon } = K;
+  const { Icon, Logo } = K;
   const c = D.company;
 
-  const Col = ({ label, children }) => (
-    <div className="flex flex-col gap-3.5">
-      <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-white/40">{label}</span>
-      {children}
-    </div>
-  );
+  // Six services split across two equal columns, in the order the design
+  // lists them.
+  const half = Math.ceil(D.services.length / 2);
+  const serviceCols = [D.services.slice(0, half), D.services.slice(half)];
 
-  const linkCls = "text-[14.5px] leading-7 text-white/70 transition-colors duration-200 ease-out hover:text-aqua-400";
+  const labelCls = "text-eyebrow font-semibold uppercase tracking-eyebrow text-white/40";
+  const bodyCls = "text-[14.5px] leading-7 tracking-[-0.16px] text-white/70";
+  const linkCls = bodyCls + " transition-colors duration-200 ease-out hover:text-aqua-400";
+
+  const contact = [
+    { icon: "phone", text: c.phone, href: "tel:" + c.phone.replace(/\s/g, "") },
+    { icon: "mail", text: c.email, href: "mailto:" + c.email },
+    { icon: "clock", text: "Sun–Thu, 08:00–18:00 GST" },
+  ];
 
   return (
     <footer className="bg-navy-900 text-white">
       <div className="mx-auto max-w-container px-5 pb-8 pt-14 sm:px-gutter sm:pt-20">
-        <div className="pb-9 sm:pb-13">
-          <Wordmark className="block h-7" />
-        </div>
 
-        <div className="grid gap-9 border-b border-white/10 pb-8 sm:pb-12 lg:grid-cols-[1.2fr_1fr_1fr] lg:gap-12">
-          <Col label="Location">
-            <span className="max-w-[320px] text-[14.5px] leading-7 text-white/70">{c.address}</span>
-          </Col>
-
-          <Col label="Our Services">
-            <div className="flex flex-col gap-1.5">
-              {D.services.map((s) => (
-                <a key={s.slug} href="#" className={linkCls}
-                   onClick={(e) => { e.preventDefault(); onNavigate({ name: "ServiceDetail", param: s.slug }); }}>
-                  {s.name}
-                </a>
+        {/* ── columns ─────────────────────────────────── */}
+        <div className="grid gap-9 pb-10 sm:pb-12 lg:grid-cols-3 lg:gap-8">
+          <div className="flex flex-col gap-3.5">
+            <span className={labelCls}>Location</span>
+            <span className={"max-w-[320px] " + bodyCls}>
+              {c.addressLines.map((line) => (
+                <React.Fragment key={line}>{line}<br /></React.Fragment>
               ))}
-              <a href="#" className="text-[14.5px] leading-7 text-aqua-400 transition-colors hover:text-aqua-600"
-                 onClick={(e) => { e.preventDefault(); onNavigate("Brands"); }}>
-                Our Brands &amp; Partners
-              </a>
-            </div>
-          </Col>
+            </span>
+          </div>
 
-          <Col label="Contact">
-            <div className="flex flex-col gap-2.5">
-              <a href={"tel:" + c.phone.replace(/\s/g, "")} className={"inline-flex items-center gap-2.5 " + linkCls}>
-                <Icon name="phone" size={15} color="var(--aqua-400)" /> {c.phone}
-              </a>
-              <a href={"mailto:" + c.email} className={"inline-flex items-center gap-2.5 " + linkCls}>
-                <Icon name="mail" size={15} color="var(--aqua-400)" /> {c.email}
-              </a>
-              <span className="inline-flex items-center gap-2.5 text-[14.5px] leading-7 text-white/70">
-                <Icon name="clock" size={15} color="var(--aqua-400)" /> Sun–Thu, 08:00–18:00 GST
+          {serviceCols.map((group, i) => (
+            <div key={i} className="flex flex-col gap-3.5">
+              {/* The design repeats the heading over both service columns.
+                  The second is hidden from assistive tech so the group is
+                  announced once rather than twice. */}
+              <span className={labelCls} aria-hidden={i > 0 ? "true" : undefined}>
+                Our Services
               </span>
+              <div className="flex flex-col gap-1.5">
+                {group.map((s) => (
+                  <a
+                    key={s.slug}
+                    href="#"
+                    className={linkCls}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate({ name: "ServiceDetail", param: s.slug });
+                    }}
+                  >
+                    {s.name}
+                  </a>
+                ))}
+              </div>
             </div>
-          </Col>
+          ))}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-6 text-xs text-white/40">
-          <span>© {new Date().getFullYear()} Superfluids. All rights reserved.</span>
-          <span>{D.markets.join(" · ")}</span>
+        {/* ── wordmark + contact ──────────────────────── */}
+        <div className="flex flex-col gap-10 pt-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+          {/* Sized by ink rather than by box: the design's wordmark measures
+              534×157 of actual glyph, and this export carries no padding,
+              so 534px wide lands on the same footprint. */}
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); onNavigate("Home"); }}
+            aria-label="Superfluids — home"
+            className="block w-[260px] max-w-full sm:w-[400px] lg:w-[534px]"
+          >
+            <Logo variant="wordmark-white" className="block h-auto w-full" />
+          </a>
+
+          <div className="flex flex-none flex-col gap-2.5">
+            {contact.map((row) => {
+              const inner = (
+                <React.Fragment>
+                  <span className="flex h-[15px] w-[15px] flex-none items-center justify-center">
+                    <Icon name={row.icon} size={15} color="var(--aqua-400)" />
+                  </span>
+                  {row.text}
+                </React.Fragment>
+              );
+              return row.href ? (
+                <a key={row.icon} href={row.href} className={"inline-flex items-center gap-2.5 " + linkCls}>
+                  {inner}
+                </a>
+              ) : (
+                <span key={row.icon} className={"inline-flex items-center gap-2.5 " + bodyCls}>
+                  {inner}
+                </span>
+              );
+            })}
+          </div>
         </div>
+
       </div>
     </footer>
   );
