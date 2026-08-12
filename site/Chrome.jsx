@@ -140,17 +140,18 @@ function Header({ active, onNavigate }) {
             (phase === "closed" ? "pointer-events-auto" : "pointer-events-none")
           }
         >
-          {/* The wordmark's droplet descender fills the lower half of the
-              asset, so the word alone reads far smaller than the box.
-              Sized up accordingly and nudged down to optically centre the
-              word rather than the bounding box. */}
+          {/* No optical nudge any more: the Figma frame already sits the
+              word where it belongs, with the droplet's descender balanced
+              against the space above. Heights are set so the word renders
+              at the size it did before — the new frame carries padding the
+              old crop did not. */}
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); go("Home"); }}
             aria-label="Superfluids — home"
-            className="flex h-11 items-center pr-4"
+            className="flex items-center pr-4"
           >
-            <K.Logo variant="wordmark-white" className="block h-[30px] w-auto translate-y-[5px] sm:h-[34px]" />
+            <K.Logo variant="wordmark-white" className="block h-[36px] w-auto sm:h-[41px]" />
           </a>
 
           <a
@@ -209,7 +210,7 @@ function Header({ active, onNavigate }) {
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
             {/* panel header */}
             <div className="flex items-center justify-between">
-              <K.Logo variant="wordmark-white" className="h-9 w-auto translate-y-[4px] sm:h-10" />
+              <K.Logo variant="wordmark-white" className="h-[44px] w-auto sm:h-[48px]" />
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -423,14 +424,13 @@ function Footer({ onNavigate }) {
 
         {/* ── wordmark + contact ──────────────────────── */}
         <div className="flex flex-col gap-10 pt-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-          {/* Sized by ink rather than by box: the design's wordmark measures
-              534×157 of actual glyph, and this export carries no padding,
-              so 534px wide lands on the same footprint. */}
+          {/* 579px is the Figma frame's own width, which lands the glyph on
+              the 534×157 the design measures. */}
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); onNavigate("Home"); }}
             aria-label="Superfluids — home"
-            className="block w-[260px] max-w-full sm:w-[400px] lg:w-[534px]"
+            className="block w-[282px] max-w-full sm:w-[433px] lg:w-[579px]"
           >
             <Logo variant="wordmark-white" className="block h-auto w-full" />
           </a>

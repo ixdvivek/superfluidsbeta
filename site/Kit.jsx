@@ -60,13 +60,15 @@ function useRipple() {
 // Every logo in the project renders through here, so switching to a new
 // set of files is a change to this table alone.
 //
-// TODO: the Figma file (uoTagj62uZCjBvcaxMbRu6) carries the canonical
-// variants — "Logo - white" (1:772), "Logo - dark" (1:1195) and four
-// icons: default (1:1419), Dark (1:1450), Teal (1:1837), White (1:2223).
-// They could not be fetched: every figma.com host returns 403 from this
-// sandbox's egress proxy. The paths below still point at the older
-// exports, which are the same artwork on a slightly tighter crop
-// (ink ratio 3.18 against Figma's 3.42).
+// Exported from the Figma file (uoTagj62uZCjBvcaxMbRu6): "Logo - white"
+// (1:772), "Logo - dark" (1:1195) and the icon set (1:1419/1450/1837/2223).
+// Originals are kept under assets/logos/_source/.
+//
+// The wordmark and full-colour icon carry a photographic droplet, so their
+// SVGs embed a 438x1163 raster and weigh ~500KB each. Both are rasterised
+// instead — 1200px wide puts the droplet at ~109px from that 438px source,
+// well inside its native resolution, for 22KB of WebP. The flat icons have
+// no raster and stay vector.
 const LOGO_SRC = {
   "wordmark-white": {
     webp: "assets/logos/superfluids-wordmark-white.webp",
@@ -76,12 +78,13 @@ const LOGO_SRC = {
     webp: "assets/logos/superfluids-wordmark-navy.webp",
     png: "assets/logos/superfluids-wordmark-navy.png",
   },
-  "icon-navy": {
-    webp: "assets/logos/superfluids-mark.webp",
-    png: "assets/logos/superfluids-mark.png",
+  "icon": {
+    webp: "assets/logos/superfluids-icon.webp",
+    png: "assets/logos/superfluids-icon.png",
   },
-  "icon-white": { png: "assets/logos/superfluids-mark-white.png" },
-  // "icon-teal" awaits the Figma export; nothing references it yet.
+  "icon-navy": { png: "assets/logos/superfluids-icon-navy.svg" },
+  "icon-teal": { png: "assets/logos/superfluids-icon-teal.svg" },
+  "icon-white": { png: "assets/logos/superfluids-icon-white.svg" },
 };
 
 function Logo({ variant = "wordmark-white", className = "", alt = "Superfluids" }) {
