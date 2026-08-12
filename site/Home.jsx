@@ -244,39 +244,6 @@ function HomeScreen({ onNavigate }) {
         )}
       </Section>
 
-      {/* ── CAPABILITIES + OUTCOMES ──────────────────────── */}
-      <Section tone="navy">
-        <Grid cols={2} mob={1} gap={64}>
-          <Reveal style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <Eyebrow tone="onDark">Capabilities Matrix</Eyebrow>
-            <h2 className="text-balance text-h2 font-medium text-white">
-              Four capability areas, one accountable team
-            </h2>
-            <p className="text-pretty text-base leading-relaxed text-white/65">
-              Every engagement runs through the same disciplined sequence — whether it's a
-              single pump room or a full MEP scope.
-            </p>
-            <div className="mt-1.5">
-              <PillRow items={D.capabilities} numbered onDark />
-            </div>
-          </Reveal>
-
-          <Reveal delay={100} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <Eyebrow tone="onDark">Outcomes</Eyebrow>
-            <h2 className="text-balance text-h2 font-medium text-white">
-              What clients get out of it
-            </h2>
-            <p className="text-pretty text-base leading-relaxed text-white/65">
-              Measured results, not promises — lower running costs, fewer failures, and
-              systems that hold their design performance.
-            </p>
-            <div className="mt-1.5">
-              <PillRow items={D.outcomes} onDark />
-            </div>
-          </Reveal>
-        </Grid>
-      </Section>
-
       {/* ── CTA ──────────────────────────────────────────── */}
       <CTABand
         title="Ready to engineer your next project?"
@@ -285,38 +252,6 @@ function HomeScreen({ onNavigate }) {
         secondary={{ label: "Explore Services", to: "Services" }}
         onNavigate={onNavigate}
       />
-
-      {/* ── STRATEGIC BRANDS ─────────────────────────────── */}
-      <Section tone="light" size="sm">
-        <SectionHead
-          eyebrow="Strategic Brands"
-          title="We exclusively partner with the industry's most trusted manufacturers"
-          align="center"
-          max={700}
-          style={{ marginBottom: isMobile ? 32 : 48 }}
-        />
-        <Grid cols={4} mob={1} gap={20}>
-          {D.brandGroups.map((g, i) => (
-            <Reveal key={g.title} delay={i * 60}>
-              <div className="flex h-full flex-col gap-3 rounded-lg border border-line p-6">
-                <span className="sf-num text-sm font-semibold text-aqua-600">
-                  {String(g.brands.length).padStart(2, "0")}
-                </span>
-                <h3 className="text-[17px] font-semibold tracking-snug text-ink">{g.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">
-                  {g.brands.slice(0, 4).join(" · ")}
-                  {g.brands.length > 4 && " + more"}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </Grid>
-        <div className="mt-8 flex justify-center">
-          <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Brands")}>
-            View All Brands &amp; Partners
-          </Button>
-        </div>
-      </Section>
 
     </div>
   );
