@@ -6,12 +6,13 @@
 function ProductDetailScreen({ onNavigate, param }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
-    SplitHero, SpecTable, CheckList, Tile, MediaFrame, CTABand, Icon, useMobile,
+    SplitHero, SpecTable, CheckList, Tile, MediaFrame, CTABand, Icon, useMobile, BrandTile,
   } = window.SFKit;
   const D = window.SFData;
   const isMobile = useMobile();
 
   const product = D.products.find((p) => p.slug === param) || D.products[0];
+  const brandList = (product.brandList || []).filter((b) => /[A-Za-z0-9]/.test(b));
 
   // Sibling products from the same hub group, for the related row.
   const group = D.productGroups.find((g) => g.slugs.includes(product.slug));
@@ -114,7 +115,9 @@ function ProductDetailScreen({ onNavigate, param }) {
       )}
 
       {/* ── BRANDS AVAILABLE ─────────────────────────────── */}
-      {product.brandList && product.brandList.length > 0 && (
+      {/* One product carries "—" as a placeholder rather than a brand; drop
+          any such entry so it does not render as a card with a dash in it. */}
+      {brandList.length > 0 && (
         <Section tone={product.specs && product.specs.length ? "alt" : "light"} size="sm">
           <Grid cols={2} mob={1} gap={56} style={{ alignItems: "center" }}>
             <Reveal style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -132,16 +135,12 @@ function ProductDetailScreen({ onNavigate, param }) {
                 </Button>
               </div>
             </Reveal>
-            {/* Flex-wrap rather than a fixed grid: brand counts vary from 2
-                to 6 per product, and a grid leaves dead cells on the last row. */}
+            {/* Grid, so cards stay one width; a short last row of flex-1
+                cards stretches and the logos inside then read at different
+                scales. Empty cells on the last row are the lesser evil. */}
             <Reveal delay={90}>
-              <div className="flex flex-wrap gap-3">
-                {product.brandList.map((b) => (
-                  <span key={b}
-                    className="flex min-h-[68px] flex-1 basis-[calc(50%-0.375rem)] items-center justify-center rounded-lg border border-line bg-white px-5 py-4 text-center text-sm font-medium tracking-snug text-gray-400 sm:basis-[calc(33.333%-0.5rem)]">
-                    {b}
-                  </span>
-                ))}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {brandList.map((b) => <BrandTile key={b} name={b} />)}
               </div>
             </Reveal>
           </Grid>

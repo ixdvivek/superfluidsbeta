@@ -97,6 +97,43 @@ function Logo({ variant = "wordmark-white", className = "", alt = "Superfluids" 
   );
 }
 
+// A brand logo in a card. Lockups vary wildly — some are one wide word, some
+// stack a name over a strapline — so fitting them all to the same box leaves
+// the stacked ones looking tiny. Each logo carries a measured scale that
+// equalises ink area instead, and pale ones a brightness correction, both
+// from site/brandlogos.js.
+//
+// Colour is held back at rest so no single brand dominates the wall, and
+// restored on hover. For a permanently full-colour wall, drop the filter in
+// .sf-brand-logo.
+const BRAND_LOGO_H = 38;   // base height in px, before each logo's scale
+
+function BrandTile({ name, className = "" }) {
+  const entry = window.SFBrandLogos ? window.SFBrandLogos.get(name) : null;
+  const box =
+    "sf-brand-card flex min-h-[104px] items-center justify-center rounded-lg " +
+    "border border-line bg-white px-5 py-4 text-center transition-colors " +
+    "duration-200 ease-out hover:border-gray-300 " + className;
+
+  return (
+    <div className={box} title={name}>
+      {entry ? (
+        <img
+          src={entry.src}
+          alt={name}
+          loading="lazy"
+          className="sf-brand-logo max-w-full object-contain"
+          style={{ maxHeight: Math.round(BRAND_LOGO_H * entry.scale) + "px",
+                   "--sf-brand-dark": entry.dark }}
+        />
+      ) : (
+        // No file for this brand yet; the name keeps the grid regular.
+        <span className="text-[15px] font-medium tracking-snug text-gray-400">{name}</span>
+      )}
+    </div>
+  );
+}
+
 // Reveal-on-scroll. Falls back to visible if IO is unavailable.
 function Reveal({ children, delay = 0, as: As = "div", style = {}, ...rest }) {
   const ref = React.useRef(null);
@@ -1027,7 +1064,7 @@ function CTABand({ title, body, primary, secondary, onNavigate }) {
 }
 
 window.SFKit = {
-  useMedia, useMobile, Reveal, Logo,
+  useMedia, useMobile, Reveal, Logo, BrandTile,
   Section, Container, Grid,
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,

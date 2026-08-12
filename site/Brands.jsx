@@ -5,7 +5,7 @@
 function BrandsScreen({ onNavigate }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
-    PageHero, LogoCylinder, CTABand, Icon, useMobile,
+    PageHero, LogoCylinder, CTABand, Icon, useMobile, BrandTile,
   } = window.SFKit;
   const D = window.SFData;
   const isMobile = useMobile();
@@ -49,15 +49,11 @@ function BrandsScreen({ onNavigate }) {
             style={{ marginBottom: isMobile ? 24 : 40 }}
           />
           <Reveal>
-            <div className="flex flex-wrap gap-3">
-              {group.brands.map((b) => (
-                <span
-                  key={b}
-                  className="flex min-h-[72px] flex-1 basis-[calc(50%-0.375rem)] items-center justify-center rounded-lg border border-line bg-white px-5 py-4 text-center text-[15px] font-medium tracking-snug text-gray-500 sm:basis-[calc(25%-0.5625rem)]"
-                >
-                  {b}
-                </span>
-              ))}
+            {/* Grid rather than flex-wrap: with logos in them, a short last
+                row of flex-1 cards stretches wider than the rows above and
+                the wall stops reading as a wall. */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {group.brands.map((b) => <BrandTile key={b} name={b} />)}
             </div>
           </Reveal>
         </Section>
