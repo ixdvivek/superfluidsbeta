@@ -97,39 +97,59 @@ function Logo({ variant = "wordmark-white", className = "", alt = "Superfluids" 
   );
 }
 
-// A brand logo in a card. Lockups vary wildly — some are one wide word, some
-// stack a name over a strapline — so fitting them all to the same box leaves
-// the stacked ones looking tiny. Each logo carries a measured scale that
-// equalises ink area instead, and pale ones a brightness correction, both
-// from site/brandlogos.js.
+// A brand logo in a card, with the name beneath it — a logo alone is hard to
+// place unless you already know the mark.
+//
+// Lockups vary wildly: some are one wide word, some stack a name over a
+// strapline. Fitting them all to the same box leaves the stacked ones looking
+// tiny, so each logo carries a measured scale that equalises ink area instead,
+// and pale ones a brightness correction. Both come from site/brandlogos.js.
 //
 // Colour is held back at rest so no single brand dominates the wall, and
 // restored on hover. For a permanently full-colour wall, drop the filter in
 // .sf-brand-logo.
-const BRAND_LOGO_H = 38;   // base height in px, before each logo's scale
+const BRAND_LOGO_H = 38;    // base height in px, before each logo's scale
+const BRAND_BAND_H = 60;    // fixed band so names line up across a row
 
 function BrandTile({ name, className = "" }) {
   const entry = window.SFBrandLogos ? window.SFBrandLogos.get(name) : null;
-  const box =
-    "sf-brand-card flex min-h-[104px] items-center justify-center rounded-lg " +
-    "border border-line bg-white px-5 py-4 text-center transition-colors " +
-    "duration-200 ease-out hover:border-gray-300 " + className;
 
   return (
-    <div className={box} title={name}>
-      {entry ? (
-        <img
-          src={entry.src}
-          alt={name}
-          loading="lazy"
-          className="sf-brand-logo max-w-full object-contain"
-          style={{ maxHeight: Math.round(BRAND_LOGO_H * entry.scale) + "px",
-                   "--sf-brand-dark": entry.dark }}
-        />
-      ) : (
-        // No file for this brand yet; the name keeps the grid regular.
-        <span className="text-[15px] font-medium tracking-snug text-gray-400">{name}</span>
-      )}
+    <div
+      className={
+        "sf-brand-card flex flex-col items-center justify-center gap-3 rounded-lg " +
+        "border border-line bg-white px-4 py-5 text-center transition-colors " +
+        "duration-200 ease-out hover:border-gray-300 " + className
+      }
+    >
+      <span className="flex items-center justify-center" style={{ height: BRAND_BAND_H }}>
+        {entry ? (
+          // Decorative: the visible name below already says which brand this
+          // is, so an alt would just repeat it.
+          <img
+            src={entry.src}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="sf-brand-logo max-w-full object-contain"
+            style={{ maxHeight: Math.round(BRAND_LOGO_H * entry.scale) + "px",
+                     "--sf-brand-dark": entry.dark }}
+          />
+        ) : (
+          // Logo not supplied yet. An explicit empty slot keeps the row's
+          // rhythm and reads as pending rather than broken.
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-[92px] items-center justify-center rounded border border-dashed border-gray-200 bg-gray-50 text-gray-300"
+          >
+            <Icon name="image" size={17} strokeWidth={1.6} />
+          </span>
+        )}
+      </span>
+
+      <span className="text-[13px] font-medium leading-snug tracking-snug text-gray-500">
+        {name}
+      </span>
     </div>
   );
 }
