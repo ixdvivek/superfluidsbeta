@@ -816,12 +816,16 @@ function VideoBackdrop({
   const [videoOk, setVideoOk] = React.useState(false);
   const [posterOk, setPosterOk] = React.useState(false);
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
-  const isMobile = useMobile();
 
   // Gated on the poster: it acts as the existence probe, so no requests
   // are made for a video that has not been supplied yet. A poster is
   // wanted regardless — it covers the buffer before first frame.
-  const wantsVideo = !!src && posterOk && !reduced && !isMobile;
+  //
+  // Not gated on viewport. The clip is 84KB of 720p VP9, smaller than most
+  // hero photographs, and the tag already carries muted/playsInline/autoPlay
+  // so iOS plays it in place. Anything that refuses to autoplay — Low Power
+  // Mode, Data Saver — simply leaves the poster showing underneath.
+  const wantsVideo = !!src && posterOk && !reduced;
 
   // Probe the poster separately — it may exist before the video does.
   React.useEffect(() => {
