@@ -7,10 +7,16 @@ function HomeScreen({ onNavigate }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
     MediaFrame, InsetCard, CheckList, Tile, VideoBackdrop,
-    PillRow, Carousel, LogoCylinder, CTABand, Icon, useMobile,
+    LogoCylinder, CTABand, Icon, useMobile, SmartImage, ProjectGalleryModal,
   } = window.SFKit;
   const D = window.SFData;
   const isMobile = useMobile();
+
+  const PROJECTS_SHOWN = 6;
+  const [showAllProjects, setShowAllProjects] = React.useState(false);
+  const [openProject, setOpenProject] = React.useState(null);
+  const closeProject = React.useCallback(() => setOpenProject(null), []);
+  const projects = showAllProjects ? D.projects : D.projects.slice(0, PROJECTS_SHOWN);
 
   return (
     <div>
@@ -51,7 +57,7 @@ function HomeScreen({ onNavigate }) {
 
             <Reveal delay={180}>
               <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:mt-9">
-                <Button variant="primary" onClick={() => onNavigate("Products")}>Explore Products</Button>
+                <Button variant="primary" onClick={() => onNavigate("Shop")}>Explore Products</Button>
                 <Button variant="white" onClick={() => onNavigate("Contact")}>Get A Quote</Button>
               </div>
             </Reveal>
@@ -152,15 +158,15 @@ function HomeScreen({ onNavigate }) {
           body="6,500+ premium products across pumping, storage, heating, cooling, control and irrigation."
           style={{ marginBottom: isMobile ? 36 : 56 }}
           action={!isMobile && (
-            <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Products")}>
-              View All Products
+            <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Shop")}>
+              Visit the Shop
             </Button>
           )}
         />
         <Grid cols={3} mob={1} gap={20}>
           {D.portfolio.map((p, i) => (
             <Reveal key={p.title} delay={i * 55}>
-              <Tile {...p} onClick={() => onNavigate("Products")} />
+              <Tile {...p} onClick={() => onNavigate(p.to || "Shop")} />
             </Reveal>
           ))}
         </Grid>
@@ -184,64 +190,55 @@ function HomeScreen({ onNavigate }) {
         </Grid>
       </Section>
 
-      {/* ── SECTORS ──────────────────────────────────────── */}
-      <Section tone="alt" size="sm">
-        <Grid cols={2} mob={1} gap={56} style={{ alignItems: "center" }}>
-          <Reveal style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            <Eyebrow>Sectors We've Helped</Eyebrow>
-            <h2 className="text-balance text-h2 font-medium text-ink">
-              Trusted where reliability is non-negotiable
-            </h2>
-            <div className="mt-1">
-              <Button variant="ghost" icon="arrow-right" onClick={() => onNavigate("Industries")}>
-                Explore industries
-              </Button>
-            </div>
-          </Reveal>
-          <Reveal delay={90}>
-            <PillRow items={D.sectors.map((s) => s.name)} />
-          </Reveal>
-        </Grid>
-      </Section>
-
-      {/* ── FEATURED PROJECTS ────────────────────────────── */}
-      <Section tone="light">
-        <Carousel
-          cardWidth={isMobile ? 280 : 360}
-          gap={20}
+      {/* ── PROJECTS GALLERY ─────────────────────────────
+          Projects live here now — no separate page. Each card opens the
+          project's photo gallery in a popup. Six show at first; the rest
+          expand in place so every project stays reachable from Home. */}
+      <Section tone="alt" id="projects">
+        <SectionHead
           eyebrow="Featured Projects"
           title="2,500+ projects across the GCC"
-          body="From petrochemical utilities in Saudi Arabia to hospital expansions in Doha."
-          action={!isMobile && (
-            <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Projects")}>
-              View All Projects
-            </Button>
-          )}
-        >
-          {D.projects.slice(0, 8).map((p) => (
-            <a
-              key={p.slug}
-              href="#"
-              onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProjectDetail", param: p.slug }); }}
-              className="flex flex-col gap-4"
-            >
-              <MediaFrame label={p.country} icon={p.icon} ratio="4 / 3" />
-              <div className="flex flex-col gap-1.5">
-                <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-aqua-700">
-                  {p.sector}
+          body="From petrochemical utilities in Saudi Arabia to hospital expansions in Doha. Select a project to see the gallery."
+          style={{ marginBottom: isMobile ? 32 : 48 }}
+        />
+        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((p, i) => (
+            <Reveal key={p.slug} delay={(i % 3) * 60}>
+              <button
+                type="button"
+                onClick={() => setOpenProject(p)}
+                aria-label={"Open " + p.name + " gallery"}
+                className="group flex w-full flex-col gap-4 text-left"
+              >
+                <span className="relative block overflow-hidden rounded-lg">
+                  <span className="block transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+                    <SmartImage src={(p.images || [])[0]} alt={p.name} icon={p.icon} ratio="4 / 3" mark />
+                  </span>
+                  <span className="pointer-events-none absolute inset-0 flex items-end justify-end p-3 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 group-focus-visible:opacity-100">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[13px] font-semibold text-brand-navy shadow-md">
+                      <Icon name="images" size={15} /> View gallery
+                    </span>
+                  </span>
                 </span>
-                <h3 className="text-[19px] font-semibold tracking-snug text-ink">{p.name}</h3>
-              </div>
-            </a>
+                <span className="flex flex-col gap-1.5">
+                  <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-aqua-700">{p.sector}</span>
+                  <span className="text-[19px] font-semibold leading-snug tracking-snug text-ink transition-colors duration-200 group-hover:text-navy-600">{p.name}</span>
+                  <span className="inline-flex items-center gap-1.5 text-sm text-gray-500">
+                    <Icon name="map-pin" size={14} color="var(--gray-400)" /> {p.country}
+                  </span>
+                </span>
+              </button>
+            </Reveal>
           ))}
-        </Carousel>
-        {isMobile && (
-          <div className="mt-7">
-            <Button variant="outline" fullWidth icon="arrow-right" onClick={() => onNavigate("Projects")}>
-              View All Projects
+        </div>
+        {D.projects.length > PROJECTS_SHOWN && (
+          <div className="mt-12 flex justify-center">
+            <Button variant="outline" icon={showAllProjects ? "chevron-up" : "chevron-down"} onClick={() => setShowAllProjects((v) => !v)}>
+              {showAllProjects ? "Show fewer projects" : "Show all " + D.projects.length + " projects"}
             </Button>
           </div>
         )}
+        <ProjectGalleryModal project={openProject} onClose={closeProject} />
       </Section>
 
       {/* ── CTA ──────────────────────────────────────────── */}

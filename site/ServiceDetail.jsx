@@ -6,6 +6,7 @@ function ServiceDetailScreen({ onNavigate, param }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
     PageHero, CheckList, Steps, MediaFrame, Tile, CTABand, Icon, useMobile,
+    SmartImage, ProjectGalleryModal,
   } = window.SFKit;
   const D = window.SFData;
   const isMobile = useMobile();
@@ -13,6 +14,8 @@ function ServiceDetailScreen({ onNavigate, param }) {
   const service = D.services.find((s) => s.slug === param) || D.services[0];
   const others = D.services.filter((s) => s.slug !== service.slug).slice(0, 3);
   const relatedProjects = D.projects.slice(0, 3);
+  const [openProject, setOpenProject] = React.useState(null);
+  const closeProject = React.useCallback(() => setOpenProject(null), []);
 
   return (
     <div>
@@ -102,29 +105,31 @@ function ServiceDetailScreen({ onNavigate, param }) {
           eyebrow="Related Projects"
           title="Delivered with this service"
           style={{ marginBottom: isMobile ? 28 : 44 }}
-          action={!isMobile && (
-            <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Projects")}>
-              All Projects
-            </Button>
-          )}
         />
         <Grid cols={3} mob={1} gap={20}>
           {relatedProjects.map((p, i) => (
             <Reveal key={p.slug} delay={i * 60}>
-              <a href="#"
-                onClick={(e) => { e.preventDefault(); onNavigate({ name: "ProjectDetail", param: p.slug }); }}
-                className="flex flex-col gap-4">
-                <MediaFrame label={p.country} icon={p.icon} ratio="4 / 3" />
+              {/* Opens the same gallery popup as the Home projects grid. */}
+              <button type="button"
+                onClick={() => setOpenProject(p)}
+                aria-label={"Open " + p.name + " gallery"}
+                className="group flex w-full flex-col gap-4 text-left">
+                <span className="block overflow-hidden rounded-lg">
+                  <span className="block transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+                    <SmartImage src={(p.images || [])[0]} alt={p.name} icon={p.icon} ratio="4 / 3" mark />
+                  </span>
+                </span>
                 <div className="flex flex-col gap-1.5">
                   <span className="text-eyebrow font-semibold uppercase tracking-eyebrow text-aqua-700">
                     {p.sector}
                   </span>
                   <h3 className="text-[19px] font-semibold tracking-snug text-ink">{p.name}</h3>
                 </div>
-              </a>
+              </button>
             </Reveal>
           ))}
         </Grid>
+        <ProjectGalleryModal project={openProject} onClose={closeProject} />
       </Section>
 
       {/* ── OTHER SERVICES ───────────────────────────────── */}

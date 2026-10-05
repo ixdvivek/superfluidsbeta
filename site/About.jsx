@@ -134,11 +134,6 @@ function AboutScreen({ onNavigate }) {
           eyebrow="Projects Gallery"
           title="Delivered across the GCC"
           style={{ marginBottom: isMobile ? 24 : 40 }}
-          action={!isMobile && (
-            <Button variant="outline" icon="arrow-right" onClick={() => onNavigate("Projects")}>
-              View All Projects
-            </Button>
-          )}
         />
         <Reveal>
           <Gallery count={isMobile ? 6 : 9} icon="building-2" />
@@ -165,7 +160,7 @@ function AboutScreen({ onNavigate }) {
         title="Ready to engineer your next project?"
         body="Tell us the duty and we'll size the system. Our team responds within one business day."
         primary={{ label: "Get in Touch", to: "Contact" }}
-        secondary={{ label: "Explore Products", to: "Products" }}
+        secondary={{ label: "Visit the Shop", to: "Shop" }}
         onNavigate={onNavigate}
       />
     </div>

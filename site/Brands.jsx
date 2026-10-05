@@ -96,7 +96,7 @@ function BrandsScreen({ onNavigate }) {
         title="Looking for a specific manufacturer?"
         body="If it moves, stores or conditions fluid, we can likely source it. Ask us."
         primary={{ label: "Get in Touch", to: "Contact" }}
-        secondary={{ label: "View Products", to: "Products" }}
+        secondary={{ label: "Visit the Shop", to: "Shop" }}
         onNavigate={onNavigate}
       />
     </div>

@@ -99,7 +99,7 @@ function ServicesScreen({ onNavigate }) {
         title="Have a system that needs engineering?"
         body="Tell us about the project and we'll scope the right solution — design, supply, install and maintain."
         primary={{ label: "Request a Site Assessment", to: "Contact" }}
-        secondary={{ label: "View Products", to: "Products" }}
+        secondary={{ label: "Visit the Shop", to: "Shop" }}
         onNavigate={onNavigate}
       />
     </div>

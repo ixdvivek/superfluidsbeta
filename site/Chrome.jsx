@@ -11,11 +11,9 @@ const CLIP_OPEN = "inset(0px 0px 0px 0px round 24px)";
 
 const NAV_ROUTES = {
   "Home": "Home",
-  "About": "About",
-  "Products & Services": "Products",
+  "Shop": "Shop",
   "Services": "Services",
-  "Industries": "Industries",
-  "Projects": "Projects",
+  "About": "About",
   "Contact": "Contact",
 };
 
@@ -159,6 +157,23 @@ function Header({ active, onNavigate }) {
             <K.Logo variant="wordmark-white" className="block h-[36px] w-auto sm:h-[41px]" />
           </a>
 
+          {/* Shop. Same 44px round button as the call one; the aqua ring marks
+              the current page when the shop is open. */}
+          <a
+            href="#/shop"
+            onClick={(e) => { e.preventDefault(); go("Shop"); }}
+            aria-label="Shop"
+            title="Shop"
+            aria-current={active === "Shop" ? "page" : undefined}
+            tabIndex={phase === "closed" ? 0 : -1}
+            className={
+              "flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-md " +
+              (active === "Shop" ? "ring-2 ring-brand-aqua" : "")
+            }
+          >
+            <NavGlyph name="cart" size={18} />
+          </a>
+
           <a
             href={"tel:" + D.company.phone.replace(/\s/g, "")}
             aria-label={"Call Superfluids on " + D.company.phone}
@@ -289,7 +304,7 @@ function Header({ active, onNavigate }) {
               <div className="flex min-w-0 flex-col gap-2.5">
                 <a
                   href="#"
-                  onClick={(e) => { e.preventDefault(); go("Projects"); }}
+                  onClick={(e) => { e.preventDefault(); go("Shop"); }}
                   className="group relative hidden flex-1 overflow-hidden rounded-xl bg-navy-800 ring-1 ring-white/10 lg:block"
                   style={{ minHeight: 130 }}
                 >
@@ -311,10 +326,10 @@ function Header({ active, onNavigate }) {
                   <span className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
                     <span className="flex flex-col gap-0.5">
                       <span className="text-[11px] font-semibold uppercase tracking-eyebrow text-aqua-400">
-                        Case studies
+                        Shop
                       </span>
                       <span className="text-[15px] font-medium tracking-snug text-white">
-                        2,500+ projects across the GCC
+                        Pumps, tanks &amp; controls — enquire on WhatsApp
                       </span>
                     </span>
                     <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-white transition-transform duration-300 ease-out group-hover:translate-x-1">

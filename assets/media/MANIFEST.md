@@ -30,31 +30,19 @@ shot only exists on black, send it anyway and flag it — most can be cut.
 
 ---
 
-## Per-item images — 33
+## Per-item images
 
 One per record. The same file serves the detail page hero and the smaller
 cards that link to it, so only the one size is needed.
 
-### Products — `assets/media/products/<slug>/main.jpg` · 4:3
+### Shop products — `assets/media/shop/<slug>/01.jpg, 02.jpg…` · 1:1
 
-The company profile deck already carries a usable reference shot for the
-ones marked ✓ — those are the subjects to match, not the files to use
-(the deck's copies are 100dpi and too small).
-
-- `transfer-pumps/main.jpg` ✓ deck p6
-- `booster-pumps/main.jpg` ✓ deck p5
-- `agriculture-irrigation-pumps/main.jpg` ✓ deck p11
-- `circulation-chilled-water-pumps/main.jpg` ✓ deck p6
-- `submersible-pumps/main.jpg` ✓ deck p7
-- `pressure-kits/main.jpg` ✓ deck p9
-- `pressure-tanks/main.jpg` ✓ deck p8
-- `control-panels/main.jpg` — nothing usable in the deck
-- `manifolds/main.jpg` — nothing usable in the deck
-- `grp-panel-tanks/main.jpg` ✓ deck p10
-- `solar-water-heaters/main.jpg` ✓ deck p10
-- `water-chillers/main.jpg` ✓ deck p10
-- `irrigation-products/main.jpg` — nothing usable in the deck
-- `swimming-pool-products/main.jpg` ✓ deck p11
+The Shop replaced the 14 product pages (those folders under
+`products/` are no longer used). Shop photos are **listed in the data**
+rather than found by filename: add the paths to that product's `images`
+array in `site/shop.js` — the first is the card thumbnail, the rest
+appear in the popup slider. Square, white or transparent background,
+**1200×1200**.
 
 ### Services — `assets/media/services/<slug>/main.jpg` · 4:3
 
@@ -68,28 +56,30 @@ schedule, a panel being wired, a pump being aligned.
 - `annual-maintenance-contracts/main.jpg`
 - `total-mep-contracting/main.jpg`
 
-### Projects — `assets/media/projects/<slug>/main.jpg` · 4:3
+### Projects — `assets/media/projects/<slug>/01.jpg, 02.jpg…` · 16:10 or 4:3
 
-Real site photography. These carry the most weight on the site and are the
-one category manufacturer stock cannot cover.
+Projects are a gallery on the Home page; each opens a popup slider. List
+the files in that project's `images` array in `site/data.js` — the first
+is the grid thumbnail. As many photos per project as you like,
+landscape, **1600×1000** or larger.
 
-- `neom-utility-pump-station/main.jpg`
-- `yanbu-refinery-expansion/main.jpg`
-- `jubail-petrochemical-utilities/main.jpg`
-- `riyadh-business-park/main.jpg`
-- `sohar-industrial-estate-utilities/main.jpg`
-- `muscat-water-distribution-upgrade/main.jpg`
-- `salalah-beach-resort/main.jpg`
-- `kuwait-financial-centre-tower/main.jpg`
-- `al-adan-hospital-extension/main.jpg`
-- `hamad-medical-city-expansion/main.jpg`
-- `hidd-sewage-pumping-station/main.jpg`
-- `marina-heights-tower/main.jpg`
-- `green-community-residences/main.jpg`
+- `neom-utility-pump-station/`
+- `yanbu-refinery-expansion/`
+- `jubail-petrochemical-utilities/`
+- `riyadh-business-park/`
+- `sohar-industrial-estate-utilities/`
+- `muscat-water-distribution-upgrade/`
+- `salalah-beach-resort/`
+- `kuwait-financial-centre-tower/`
+- `al-adan-hospital-extension/`
+- `hamad-medical-city-expansion/`
+- `hidd-sewage-pumping-station/`
+- `marina-heights-tower/`
+- `green-community-residences/`
 
 ---
 
-## Fixed slots — 7
+## Fixed slots
 
 `assets/media/pages/`
 
@@ -98,7 +88,6 @@ one category manufacturer stock cannot cover.
 - `about-engineers.jpg` · 16:10 — engineers at work
 - `home-feature.jpg` · **4:5 portrait** — team on site, home page
 - `home-secondary.jpg` · 4:3
-- `industries-commissioning.jpg` · 4:3 — plant room commissioning
 - `services-commissioning.jpg` · **4:5 portrait** — commissioning on site
 
 ---
