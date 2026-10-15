@@ -101,6 +101,83 @@ function SFPartnerCards({ items }) {
   );
 }
 
+// Core Product Portfolio card, from the Figma frame (uoTagj62uZCjBvcaxMbRu6,
+// 18:254). Three resting looks — white, aqua, or a photo under a dark
+// gradient — and one hover for all of them: the navy fill spreading from
+// the pointer, the same ripple the rest of the site's cards use.
+function SFPortfolioCard({ variant = "white", image, glyph, icon, title, description, onClick }) {
+  const { Icon, NavGlyph, useRipple } = window.SFKit;
+  const r = useRipple();
+  const [imgOk, setImgOk] = React.useState(true);
+  const photo = variant === "photo";
+  const light = variant === "white";
+
+  const iconBox = {
+    white: "bg-aqua-50 text-aqua-700",
+    aqua: "bg-[rgba(233,250,252,0.3)] text-white",
+    photo: "text-white",
+  }[variant];
+
+  return (
+    <div
+      ref={r.ref}
+      onClick={onClick}
+      onPointerEnter={r.onPointerEnter}
+      onPointerLeave={r.onPointerLeave}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); } }}
+      className={
+        "group relative isolate flex h-[251px] cursor-pointer flex-col justify-between overflow-hidden rounded-lg px-[26px] py-7 " +
+        "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg " +
+        "focus-visible:-translate-y-1 focus-visible:bg-brand-navy focus-visible:outline-none " +
+        (light ? "border border-line bg-white hover:border-transparent focus-visible:border-transparent " : "") +
+        (variant === "aqua" ? "bg-aqua-600 " : "") +
+        (photo ? "bg-navy-800 " : "")
+      }
+    >
+      {photo && image && imgOk && (
+        <span aria-hidden="true" className="absolute inset-0 -z-[2]">
+          <img src={image} alt="" loading="lazy" onError={() => setImgOk(false)}
+            className="absolute inset-0 h-full w-full object-cover" />
+          <span className="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70" />
+        </span>
+      )}
+      <span {...r.rippleProps} style={{ ...r.rippleProps.style, background: "var(--brand-navy, #000A33)", zIndex: -1 }} />
+
+      <span className={
+        "sf-ink flex h-10 w-10 items-center justify-center rounded-sm " + iconBox + " " +
+        "group-hover:bg-brand-aqua group-hover:text-brand-navy group-focus-visible:bg-brand-aqua group-focus-visible:text-brand-navy"
+      }>
+        {glyph ? <NavGlyph name={"material/" + glyph} size={22} /> : <Icon name={icon} size={20} />}
+      </span>
+
+      <span className="flex items-end gap-3">
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className={
+            "sf-ink text-[19px] font-semibold leading-[30.4px] tracking-[-0.38px] " +
+            (light ? "text-ink " : "text-white ") + "group-hover:text-white group-focus-visible:text-white"
+          }>
+            {title}
+          </span>
+          <span className={
+            "sf-ink text-[14.5px] leading-5 tracking-[-0.16px] " +
+            (light ? "text-gray-500 " : "text-white ") + "group-hover:text-white/70 group-focus-visible:text-white/70"
+          }>
+            {description}
+          </span>
+        </span>
+        <span className={
+          "sf-ink mb-[3px] flex-none transition-transform duration-300 ease-out group-hover:translate-x-1 " +
+          (light ? "text-blue-600 " : "text-white ") + "group-hover:text-brand-aqua group-focus-visible:text-brand-aqua"
+        }>
+          <Icon name="arrow-right" size={15} />
+        </span>
+      </span>
+    </div>
+  );
+}
+
 function HomeScreen({ onNavigate }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
@@ -264,7 +341,7 @@ function HomeScreen({ onNavigate }) {
         <Grid cols={3} mob={1} gap={20}>
           {D.portfolio.map((p, i) => (
             <Reveal key={p.title} delay={i * 55}>
-              <Tile {...p} onClick={() => onNavigate(p.to || "Shop")} />
+              <SFPortfolioCard {...p} onClick={() => onNavigate(p.to || "Shop")} />
             </Reveal>
           ))}
         </Grid>

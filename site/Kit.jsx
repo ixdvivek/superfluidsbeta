@@ -1106,7 +1106,7 @@ function CTABand({ title, body, primary, secondary, onNavigate }) {
 }
 
 window.SFKit = {
-  useMedia, useMobile, Reveal, Logo, BrandTile, NavGlyph,
+  useMedia, useMobile, useRipple, Reveal, Logo, BrandTile, NavGlyph,
   Section, Container, Grid,
   Eyebrow, SectionHead, Button,
   MediaFrame, InsetCard, MiniChart,

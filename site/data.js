@@ -46,13 +46,15 @@ Object.assign(window.SFData, {
 
   // Home — Core Product Portfolio. `to` is where each tile leads: product
   // groups open the matching Shop category, the service-led ones go to Services.
+  // `variant` sets the resting look (white, aqua, or photo); every card
+  // fills navy on hover. `glyph` is a Material Symbol in assets/icons/material.
   portfolio: [
-    { icon: "gauge", title: "Pumping Systems", description: "Transfer, booster, chilled water and irrigation pump sets.", to: { name: "Shop", param: "pumps" } },
-    { icon: "container", title: "Water & Heat Management", description: "Storage tanks, electrical and solar water heaters.", to: { name: "Shop", param: "heating-cooling" } },
-    { icon: "filter", title: "Fluid Conditioning", description: "Treatment, air separators and pressure vessels.", to: { name: "Shop", param: "tanks-vessels" } },
-    { icon: "cpu", title: "Control & Automation", description: "Custom control panels and VFD systems.", to: { name: "Shop", param: "controls-automation" } },
-    { icon: "wind", title: "HVAC & Plumbing Support", description: "Pressurisation units and MEP integration.", to: "Services" },
-    { icon: "layers", title: "Total MEP Contracting", description: "End-to-end mechanical, electrical and plumbing delivery.", to: { name: "ServiceDetail", param: "total-mep-contracting" } },
+    { variant: "white", glyph: "water_pump", icon: "gauge", title: "Pumping Systems", description: "Transfer, booster, chilled water and irrigation pump sets.", to: { name: "Shop", param: "pumps" } },
+    { variant: "photo", image: "assets/media/pages/portfolio-water-heat.jpg", glyph: "local_fire_department", icon: "container", title: "Water & Heat Management", description: "Storage tanks, electrical and solar water heaters.", to: { name: "Shop", param: "heating-cooling" } },
+    { variant: "aqua", glyph: "acupuncture", icon: "filter", title: "Fluid Conditioning", description: "Treatment, air separators and pressure vessels.", to: { name: "Shop", param: "tanks-vessels" } },
+    { variant: "photo", image: "assets/media/pages/portfolio-control.jpg", glyph: "clarify", icon: "cpu", title: "Control & Automation", description: "Custom control panels and VFD systems.", to: { name: "Shop", param: "controls-automation" } },
+    { variant: "aqua", glyph: "cool_to_dry", icon: "wind", title: "HVAC & Plumbing Support", description: "Pressurisation units and MEP integration.", to: "Services" },
+    { variant: "white", glyph: "home_repair_service", icon: "layers", title: "Total MEP Contracting", description: "End-to-end mechanical, electrical and plumbing delivery.", to: { name: "ServiceDetail", param: "total-mep-contracting" } },
   ],
 
   // Home — "Engineering partners" cards. The open card shows its photo.

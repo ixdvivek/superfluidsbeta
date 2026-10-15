@@ -86,6 +86,8 @@ landscape, **1600×1000** or larger.
 - `why-brands.jpg` · 4:5 portrait — Home "Engineering partners", Market-Leading Brands
 - `why-proficiency.jpg` · 4:5 portrait — same section, Technical Proficiency
 - `why-support.jpg` · 4:5 portrait — same section, End-to-End Support
+- `portfolio-water-heat.jpg` · 3:2 landscape — Home "Core Product Portfolio", Water & Heat Management card
+- `portfolio-control.jpg` · 3:2 landscape — same section, Control & Automation card
 - `about-facility.jpg` · 4:3 — the DIP premises
 - `about-team-onsite.jpg` · **4:5 portrait** — engineering team on site
 - `about-engineers.jpg` · 16:10 — engineers at work
