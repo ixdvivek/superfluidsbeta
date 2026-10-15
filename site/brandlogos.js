@@ -43,7 +43,7 @@
     "Peštan": { src: "assets/brandicons/pestan.svg", scale: 0.99, dark: 0.92 },
     "MPI Atlas": { src: "assets/brandicons/mpi-atlas.svg", scale: 0.75, dark: 1.0 },
     "Rain Bird": { src: "assets/brandicons/rain-bird.svg", scale: 0.96, dark: 0.72 },
-    "Pegler": { src: "assets/brandicons/pegler.svg", scale: 1.36, dark: 0.61 },
+    "Pegler": { src: "assets/brandicons/pegler.png", scale: 1.15, dark: 1.0 },
     "ABB": { src: "assets/brandicons/abb.svg", scale: 0.84, dark: 1.0 },
     "EKF": { src: "assets/brandicons/ekf.svg", scale: 0.87, dark: 1.0 },
     "RAK Ceramics": { src: "assets/brandicons/rak-ceramics.svg", scale: 1.52, dark: 1.0 },
