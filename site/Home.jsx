@@ -79,7 +79,7 @@ function SFPartnerCards({ items }) {
                   }
                 >
                   <span className="absolute inset-0 [&>div]:!h-full [&>div]:!rounded-xl [&>div>div]:!h-full">
-                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="auto" mark style={{ height: "100%", aspectRatio: "auto" }} />
+                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="auto" mark position={w.imagePos} style={{ height: "100%", aspectRatio: "auto" }} />
                   </span>
                 </span>
               ) : (
@@ -89,7 +89,7 @@ function SFPartnerCards({ items }) {
                   style={{ marginTop: on ? 0 : -24 }}
                 >
                   <span className="min-h-0 overflow-hidden">
-                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="16 / 10" mark />
+                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="16 / 10" mark position={w.imagePos} />
                   </span>
                 </span>
               )}

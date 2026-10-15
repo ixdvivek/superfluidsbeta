@@ -49,7 +49,7 @@
   // have been delivered without anything rendering broken.
   // `mark` puts the icon large in the middle of the placeholder — used on
   // product cards, where a blank light frame otherwise reads as missing.
-  function SmartImage({ src, alt = "", fit = "cover", ratio = "4 / 3", icon = "image", label, tone = "navy", mark = false, className = "", style = {} }) {
+  function SmartImage({ src, alt = "", fit = "cover", ratio = "4 / 3", icon = "image", label, tone = "navy", mark = false, position, className = "", style = {} }) {
     const [failed, setFailed] = React.useState(false);
     React.useEffect(() => { setFailed(false); }, [src]);
     if (!src || failed) {
@@ -74,6 +74,7 @@
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
+          style={position ? { objectPosition: position } : undefined}
           className={"absolute inset-0 h-full w-full " + (fit === "contain" ? "object-contain p-6" : "object-cover")}
         />
       </div>

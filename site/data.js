@@ -55,15 +55,16 @@ Object.assign(window.SFData, {
     { icon: "layers", title: "Total MEP Contracting", description: "End-to-end mechanical, electrical and plumbing delivery.", to: { name: "ServiceDetail", param: "total-mep-contracting" } },
   ],
 
-  // Home — "Engineering partners" cards. The open card shows its photo;
-  // drop files at these paths and they replace the placeholders.
+  // Home — "Engineering partners" cards. The open card shows its photo.
+  // The photos are landscape and the slot is portrait, so `imagePos` picks
+  // which part stays in frame (CSS object-position: x y).
   whyPartner: [
     { icon: "award", title: "Market-Leading Brands", description: "Authorised partnerships with the manufacturers specifiers already trust.",
       image: "assets/media/pages/why-brands.jpg" },
     { icon: "graduation-cap", title: "Technical Proficiency", description: "Factory-trained specialists sizing every system to real hydraulic demand.",
-      image: "assets/media/pages/why-proficiency.jpg" },
+      image: "assets/media/pages/why-proficiency.jpg", imagePos: "62% 50%" },
     { icon: "life-buoy", title: "End-to-End Support", description: "One accountable partner from selection through long-term maintenance.",
-      image: "assets/media/pages/why-support.jpg" },
+      image: "assets/media/pages/why-support.jpg", imagePos: "38% 50%" },
   ],
 
 
