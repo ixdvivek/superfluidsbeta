@@ -3,6 +3,104 @@
 // Section order follows the approved wireframe. Styling is Tailwind.
 // ============================================================
 
+// "Engineering partners" cards. One card is open at a time: it grows to
+// twice the width of the others and reveals its photo beside the text.
+// The first starts open; hover, focus or a tap opens another, and the last
+// one opened stays open when the pointer leaves.
+//
+// The text column is sized to a closed card's inner width (a container
+// query on the row), so the copy never re-wraps while a card opens — only
+// the photo slides into the space that opens up.
+function SFPartnerCards({ items }) {
+  const { Icon, SmartImage, useMedia } = window.SFKit;
+  const wide = useMedia("(min-width: 1024px)");
+  const [active, setActive] = React.useState(0);
+
+  const GAP = 12, PAD = 28, GROW = 2.4;
+  // Closed cards take 1 share of the row, the open card GROW shares.
+  const shares = items.length - 1 + GROW;
+  const textW = "calc((100cqw - " + GAP * (items.length - 1) + "px) / " + shares + " - " + PAD * 2 + "px)";
+
+  return (
+    <div className="rounded-[28px] bg-gray-100 p-2.5 sm:p-3">
+      <div
+        className={wide ? "flex h-[400px]" : "flex flex-col"}
+        style={{ gap: GAP, containerType: wide ? "inline-size" : undefined }}
+      >
+        {items.map((w, i) => {
+          const on = i === active;
+          return (
+            <button
+              key={w.title}
+              type="button"
+              aria-expanded={on}
+              onMouseEnter={wide ? () => setActive(i) : undefined}
+              onFocus={() => setActive(i)}
+              onClick={() => setActive(i)}
+              className={
+                "group relative flex min-w-0 overflow-hidden rounded-[20px] bg-white text-left outline-none " +
+                "transition-[flex-grow,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] " +
+                "focus-visible:ring-2 focus-visible:ring-brand-aqua " +
+                (wide ? "flex-row basis-0 " : "flex-col ") +
+                (on ? "shadow-card" : "hover:shadow-card")
+              }
+              style={{ flexGrow: wide ? (on ? GROW : 1) : undefined, padding: PAD, gap: 24 }}
+            >
+              {/* text column — icon on top, title and copy pinned to the bottom */}
+              <span
+                className={"flex flex-none flex-col " + (wide ? "h-full" : "")}
+                style={{ width: wide ? textW : "100%" }}
+              >
+                <span className={
+                  "flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 " +
+                  (on ? "bg-brand-aqua text-brand-navy" : "bg-aqua-50 text-aqua-700 group-hover:bg-aqua-100")
+                }>
+                  <Icon name={w.icon} size={22} strokeWidth={2} />
+                </span>
+                <span className={"flex flex-col gap-3 " + (wide ? "mt-auto" : "mt-8")}>
+                  {/* Non-breaking hyphens: "Market-Leading" wraps as a word. */}
+                  <span className="text-[24px] font-medium leading-[1.15] tracking-[-0.03em] text-ink">
+                    {w.title.replace(/-/g, "\u2011")}
+                  </span>
+                  <span className="text-pretty text-[15px] leading-relaxed text-gray-500 lg:text-base">
+                    {w.description}
+                  </span>
+                </span>
+              </span>
+
+              {/* photo — fills the space the open card gains. On phones it
+                  unfolds beneath the text instead. */}
+              {wide ? (
+                <span
+                  aria-hidden={!on}
+                  className={
+                    "relative min-w-0 flex-1 overflow-hidden rounded-xl transition-opacity duration-500 ease-out " +
+                    (on ? "opacity-100 delay-150" : "opacity-0")
+                  }
+                >
+                  <span className="absolute inset-0 [&>div]:!h-full [&>div]:!rounded-xl [&>div>div]:!h-full">
+                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="auto" mark style={{ height: "100%", aspectRatio: "auto" }} />
+                  </span>
+                </span>
+              ) : (
+                <span
+                  aria-hidden={!on}
+                  className={"grid transition-[grid-template-rows,opacity] duration-500 ease-out " + (on ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0")}
+                  style={{ marginTop: on ? 0 : -24 }}
+                >
+                  <span className="min-h-0 overflow-hidden">
+                    <SmartImage src={w.image} alt={w.title} icon={w.icon} ratio="16 / 10" mark />
+                  </span>
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function HomeScreen({ onNavigate }) {
   const {
     Section, Grid, Reveal, Eyebrow, SectionHead, Button,
@@ -181,13 +279,9 @@ function HomeScreen({ onNavigate }) {
           max={640}
           style={{ marginBottom: isMobile ? 36 : 56 }}
         />
-        <Grid cols={3} mob={1} gap={20}>
-          {D.whyPartner.map((w, i) => (
-            <Reveal key={w.title} delay={i * 70}>
-              <Tile {...w} />
-            </Reveal>
-          ))}
-        </Grid>
+        <Reveal>
+          <SFPartnerCards items={D.whyPartner} />
+        </Reveal>
       </Section>
 
       {/* ── PROJECTS GALLERY ─────────────────────────────
